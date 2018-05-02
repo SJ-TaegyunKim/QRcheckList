@@ -17,19 +17,19 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 public class GenerateQRcode extends AppCompatActivity {
     ImageView imageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_qrcode);
         imageView = (ImageView) findViewById(R.id.iv_generated_qrcode);
-        findViewById(R.id.btn_generatorQR).setOnClickListener(new View.OnClickListener(){
+        findViewById(R.id.btn_generatorQR).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                String content = ((EditText)findViewById(R.id.edit_QRtext)).getText().toString();
-                if(content.isEmpty()){
+            public void onClick(View v) {
+                String content = ((EditText) findViewById(R.id.edit_QRtext)).getText().toString();
+                if (content.isEmpty()) {
                     Toast.makeText(GenerateQRcode.this, "문자를 입력해주세요", Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else {
                     generateQRcode(content);
                 }
             }

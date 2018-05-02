@@ -1,4 +1,4 @@
-package com.example.taegyunkim.qrcode;
+package com.example.taegyunkim.qrcode.Etc;
 
 public class DataManager {
     private static volatile DataManager instance = null;

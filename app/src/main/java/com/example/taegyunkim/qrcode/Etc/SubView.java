@@ -1,4 +1,4 @@
-package com.example.taegyunkim.qrcode.DynamicView;
+package com.example.taegyunkim.qrcode.Etc;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;

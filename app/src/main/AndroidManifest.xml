@@ -17,8 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".GenerateQR.GenerateQRcode" />
-        <activity android:name=".ClassifyMachine" />
-        <activity android:name=".DynamicView.SubView"></activity>
+        <activity android:name=".DetectQR.ClassifyMachine" />
+        <activity android:name=".Etc.SubView"></activity>
     </application>
 
 </manifest>

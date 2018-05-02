@@ -7,7 +7,7 @@
     android:layout_gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
     android:id="@+id/classifyReLayout"
-    tools:context=".ClassifyMachine">
+    tools:context=".DetectQR.ClassifyMachine">
 
     <TextView
         android:id="@+id/machineName"
