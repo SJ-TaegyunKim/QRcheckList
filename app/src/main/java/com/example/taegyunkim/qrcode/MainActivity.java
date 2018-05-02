@@ -18,21 +18,21 @@ import com.google.zxing.integration.android.IntentResult;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 public class MainActivity extends AppCompatActivity {
-    IntentIntegrator integrator;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Button btnGenerateClick = (Button)findViewById(R.id.btn_generateQR);
+        btnGenerateClick.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(v.getContext(), GenerateQRcode.class);
+                startActivity(intent); // GenerateQRcode 로 이동
+            }
+        });
     }
     public void detectClick(View v){
         new IntentIntegrator(this).initiateScan();
-    }
-
-
-    public void generateClick() {
-        // Intent 액티비티 넘김.
-
     }
 
     @Override
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                // 분류하는 class 만들것.
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

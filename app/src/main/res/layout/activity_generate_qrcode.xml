@@ -8,10 +8,22 @@
     tools:context=".GenerateQRcode">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/edit_QRtext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="15"
         android:inputType="textPersonName"
         android:text="Name" />
+    <Button
+        android:id="@+id/btn_generatorQR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="generate QR Code"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="230dp" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_generated_qrcode"/>
 </LinearLayout>

@@ -4,7 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -12,17 +15,31 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 public class GenerateQRcode extends AppCompatActivity {
+    ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_qrcode);
+        imageView = (ImageView) findViewById(R.id.iv_generated_qrcode);
+        findViewById(R.id.btn_generatorQR).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                String content = ((EditText)findViewById(R.id.edit_QRtext)).getText().toString();
+                if(content.isEmpty()){
+                    Toast.makeText(GenerateQRcode.this, "문자를 입력해주세요", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    generateQRcode(content);
+                }
+            }
+        });
     }
 
-    public void generateClick(String contents) {
+    public void generateQRcode(String contents) {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         try {
-            Bitmap bitmap = toBitmap(qrCodeWriter.encode(contents, BarcodeFormat.QR_CODE, 200, 200));
-            ((ImageView) findViewById(R.id.iv_generated_qrcode)).setImageBitmap(bitmap);
+            Bitmap bitmap = toBitmap(qrCodeWriter.encode(contents, BarcodeFormat.QR_CODE, 500, 500));
+            imageView.setImageBitmap(bitmap);
         } catch (WriterException e) {
             e.printStackTrace();
         }

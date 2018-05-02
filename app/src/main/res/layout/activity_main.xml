@@ -14,7 +14,7 @@
         android:layout_gravity="center">
 
         <Button
-            android:id="@+id/detectQR"
+            android:id="@+id/btn_detectQR"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -23,17 +23,13 @@
             tools:layout_editor_absoluteX="147dp"
             tools:layout_editor_absoluteY="230dp" />
         <Button
-            android:id="@+id/generateQR"
+            android:id="@+id/btn_generateQR"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:onClick="generateClick"
-            android:text="Detect QR Code"
+            android:text="generate QR Code"
             tools:layout_editor_absoluteX="147dp"
             tools:layout_editor_absoluteY="230dp" />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/iv_generated_qrcode"/>
+
     </LinearLayout>
 </LinearLayout>
