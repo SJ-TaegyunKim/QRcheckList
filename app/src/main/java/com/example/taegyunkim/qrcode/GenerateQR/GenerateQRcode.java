@@ -1,4 +1,4 @@
-package com.example.taegyunkim.qrcode;
+package com.example.taegyunkim.qrcode.GenerateQR;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.taegyunkim.qrcode.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;

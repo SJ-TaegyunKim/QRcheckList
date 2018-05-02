@@ -3,6 +3,8 @@ package com.example.taegyunkim.qrcode;
 public class DataManager {
     private static volatile DataManager instance = null;
 
+    private boolean checkFail;
+
     // 회화로
     private boolean hwaehwa_left;
     private String hwaehwa_left_remarks;
@@ -49,6 +51,15 @@ public class DataManager {
             }
         }
         return instance;
+    }
+
+    // checkFail Get, Set
+    public boolean getCheckFail() {
+        return this.checkFail;
+    }
+
+    public void setCheckFail(boolean checkFail) {
+        this.checkFail = checkFail;
     }
 
     // Hwaehwa Get, Set
