@@ -1,10 +1,12 @@
 package com.example.taegyunkim.qrcode.Etc;
 
-public class DataManager {
-    private static volatile DataManager instance = null;
+
+// 싱글톤 패턴
+public class Singleton {
+    private static volatile Singleton instance = null;
 
     private boolean checkFail;
-
+    private String checkEdit;
     // 회화로
     private boolean hwaehwa_left;
     private String hwaehwa_left_remarks;
@@ -42,11 +44,11 @@ public class DataManager {
     private String flammable_remarks;
 
 
-    public static DataManager getInstance() {
+    public static Singleton getInstance() {
         if (instance == null) {
-            synchronized (DataManager.class) {
+            synchronized (Singleton.class) {
                 if (instance == null) {
-                    instance = new DataManager();
+                    instance = new Singleton();
                 }
             }
         }
@@ -60,6 +62,14 @@ public class DataManager {
 
     public void setCheckFail(boolean checkFail) {
         this.checkFail = checkFail;
+    }
+
+    public String getCheckEdit() {
+        return this.checkEdit;
+    }
+
+    public void setCheckEdit(String checkEdit) {
+        this.checkEdit = checkEdit;
     }
 
     // Hwaehwa Get, Set

@@ -30,7 +30,7 @@
         android:orientation="horizontal">
         <RadioButton
             android:id="@+id/checkO"
-            android:text="Success"
+            android:text="PASS"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -38,7 +38,7 @@
             android:checked="true"/>
         <RadioButton
             android:id="@+id/checkX"
-            android:text="Fail"
+            android:text="Non-PASS"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"

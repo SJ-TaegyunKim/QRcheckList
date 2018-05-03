@@ -13,13 +13,11 @@ public class SubView extends LinearLayout {
 
     public SubView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         init(context);
     }
 
     public SubView(Context context) {
         super(context);
-
         init(context);
     }
     private void init(Context context){
