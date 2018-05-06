@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity
 
         } catch(IOException e) { Log.e("MobileServiceClient","error");}
 
-        getTableFromAzure();
+        getAllData();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -97,31 +98,60 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void getTableFromAzure()
+    private void getAllData()
     {
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
             @Override
             protected Void doInBackground(Void... params) {
 
                 try {
-                    final List<CheckTable> results = mCheckTable.where().field("date").eq(stringDate).select( "date", "hwaehwa_left", "hwaehwa_right").execute().get();
+                    final List<CheckTable> results = mCheckTable.where().field("date").eq(stringDate).execute().get();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() { // UI 작업
                             Log.e("Results count ", results.size()+"");
-                            for (CheckTable item : results)
+                            if(results.size()>0)
                             {
-                                Log.e("hwaehwa left", item.getHwaehwa_left()+"");
-                                Log.e("hwaehwa right ", item.getHwaehwa_right()+"");
-                                /*
-                                if (currentWeather.contains("rain") || currentWeather.contains("drizzle") || currentWeather.contains("storm")) { breakAcceleration = item.getWetAcceleration(); }
-                                else if(currentWeather.contains("snow")) { breakAcceleration = item.getDryAcceleration()/2;}
-                                else { breakAcceleration = item.getDryAcceleration(); }
+                                for (CheckTable item : results)
+                                {
+                                    Singleton.getInstance().setHwaehwa_left_remarks(item.getHwaehwa_left_marks());
+                                    Singleton.getInstance().setHwaehwa_right_remarks(item.getHwaehwa_right_marks());
+                                    Singleton.getInstance().setHwaehwa_kildal_remarks(item.getHwaehwa_kildal_marks());
+                                    Singleton.getInstance().setHotplate_hwaehwaside_remarks(item.getHotplate_hwaehwaside_marks());
+                                    Singleton.getInstance().setHotplate_jaedang_left_remarks(item.getHotplate_jaedang_left_marks());
+                                    Singleton.getInstance().setHotplate_jaedang_right_remarks(item.getHotplate_jaedang_right_marks());
+                                    Singleton.getInstance().setHotplate_jeonboon_6_remarks(item.getHotplate_jeonboon_6_marks());
+                                    Singleton.getInstance().setWaterbath_chungsin_remarks(item.getWaterbath_chungsin_marks());
+                                    Singleton.getInstance().setWaterbath_advantec_remarks(item.getWaterbath_advantec_marks());
+                                    Singleton.getInstance().setWaterbath_gagong_remarks(item.getWaterbath_gagong_marks());
+                                    Singleton.getInstance().setAas_remarks(item.getAas_marks());
+                                    Singleton.getInstance().setAutoclave_remarks(item.getAutoclave_marks());
+                                    Singleton.getInstance().setFlammable_remarks(item.getFlammable_marks());
 
-                                Singleton.getInstance().setAcceleration(breakAcceleration);
-                                */
+                                    // 검사 여부 받아오기
+                                    Singleton.getInstance().setHwaehwa_left(item.getHwaehwa_left());
+                                    Singleton.getInstance().setHwaehwa_right(item.getHwaehwa_right());
+                                    Singleton.getInstance().setHwaehwa_kildal(item.getHwaehwa_kildal());
+                                    Singleton.getInstance().setHotplate_hwaehwaside(item.getHotplate_hwaehwaside());
+                                    Singleton.getInstance().setHotplate_jaedang_left(item.getHotplate_jaedang_left());
+                                    Singleton.getInstance().setHotplate_jaedang_right(item.getHotplate_jaedang_right());
+                                    Singleton.getInstance().setHotplate_jeonboon_6(item.getHotplate_jeonboon_6());
+                                    Singleton.getInstance().setWaterbath_chungsin(item.getWaterbath_chungsin());
+                                    Singleton.getInstance().setwaterbath_advantec(item.getWaterbath_advantec());
+                                    Singleton.getInstance().setWaterbath_gagong(item.getWaterbath_gagong());
+                                    Singleton.getInstance().setAas(item.getAas());
+                                    Singleton.getInstance().setAutoclave(item.getAutoclave());
+                                    Singleton.getInstance().setFlammable(item.getFlammable());
+                                }
+
+                                Log.e("hwaehwa left", Singleton.getInstance().getHwaehwa_left()+"");
+                                Log.e("hwaehwa right ", Singleton.getInstance().getHwaehwa_right()+"");
                             }
-                        }
+                            else
+                            {
+                                // 오늘 일정으로 인스턴스 생성
+                            }
+                         }
                     });
                 } catch (final Exception e){
                     Log.e("Async", "error");
