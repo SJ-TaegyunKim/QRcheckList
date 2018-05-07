@@ -1,5 +1,6 @@
 package com.example.taegyunkim.qrcode;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity
@@ -106,61 +108,108 @@ public class MainActivity extends AppCompatActivity
 
                 try {
                     final List<CheckTable> results = mCheckTable.where().field("date").eq(stringDate).execute().get();
+                    if(results.size()>0)
+                    {
+                        Log.e("Results count ", results.size()+"");
+                        for (CheckTable item : results)
+                        {
+                            // 검사 비고란 정보 받아오기
+                            Singleton.getInstance().setHwaehwa_left_remarks(item.getHwaehwa_left_marks());
+                            Singleton.getInstance().setHwaehwa_right_remarks(item.getHwaehwa_right_marks());
+                            Singleton.getInstance().setHwaehwa_kildal_remarks(item.getHwaehwa_kildal_marks());
+                            Singleton.getInstance().setHotplate_hwaehwaside_remarks(item.getHotplate_hwaehwaside_marks());
+                            Singleton.getInstance().setHotplate_jaedang_left_remarks(item.getHotplate_jaedang_left_marks());
+                            Singleton.getInstance().setHotplate_jaedang_right_remarks(item.getHotplate_jaedang_right_marks());
+                            Singleton.getInstance().setHotplate_jeonboon_6_remarks(item.getHotplate_jeonboon_6_marks());
+                            Singleton.getInstance().setWaterbath_chungsin_remarks(item.getWaterbath_chungsin_marks());
+                            Singleton.getInstance().setWaterbath_advantec_remarks(item.getWaterbath_advantec_marks());
+                            Singleton.getInstance().setWaterbath_gagong_remarks(item.getWaterbath_gagong_marks());
+                            Singleton.getInstance().setAas_remarks(item.getAas_marks());
+                            Singleton.getInstance().setAutoclave_remarks(item.getAutoclave_marks());
+                            Singleton.getInstance().setFlammable_remarks(item.getFlammable_marks());
+
+                            // 검사 여부 받아오기
+                            Singleton.getInstance().setHwaehwa_left(item.getHwaehwa_left());
+                            Singleton.getInstance().setHwaehwa_right(item.getHwaehwa_right());
+                            Singleton.getInstance().setHwaehwa_kildal(item.getHwaehwa_kildal());
+                            Singleton.getInstance().setHotplate_hwaehwaside(item.getHotplate_hwaehwaside());
+                            Singleton.getInstance().setHotplate_jaedang_left(item.getHotplate_jaedang_left());
+                            Singleton.getInstance().setHotplate_jaedang_right(item.getHotplate_jaedang_right());
+                            Singleton.getInstance().setHotplate_jeonboon_6(item.getHotplate_jeonboon_6());
+                            Singleton.getInstance().setWaterbath_chungsin(item.getWaterbath_chungsin());
+                            Singleton.getInstance().setwaterbath_advantec(item.getWaterbath_advantec());
+                            Singleton.getInstance().setWaterbath_gagong(item.getWaterbath_gagong());
+                            Singleton.getInstance().setAas(item.getAas());
+                            Singleton.getInstance().setAutoclave(item.getAutoclave());
+                            Singleton.getInstance().setFlammable(item.getFlammable());
+                        }
+                    }
+                    else
+                    {
+                        // 오늘 일정으로 인스턴스 생성
+                        CheckTable item = new CheckTable();
+                        item.setDate(stringDate);
+
+                        Log.e("insert try", "insert trying");
+                        addItem();
+
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() { // UI 작업
-                            Log.e("Results count ", results.size()+"");
-                            if(results.size()>0)
-                            {
-                                for (CheckTable item : results)
-                                {
-                                    Singleton.getInstance().setHwaehwa_left_remarks(item.getHwaehwa_left_marks());
-                                    Singleton.getInstance().setHwaehwa_right_remarks(item.getHwaehwa_right_marks());
-                                    Singleton.getInstance().setHwaehwa_kildal_remarks(item.getHwaehwa_kildal_marks());
-                                    Singleton.getInstance().setHotplate_hwaehwaside_remarks(item.getHotplate_hwaehwaside_marks());
-                                    Singleton.getInstance().setHotplate_jaedang_left_remarks(item.getHotplate_jaedang_left_marks());
-                                    Singleton.getInstance().setHotplate_jaedang_right_remarks(item.getHotplate_jaedang_right_marks());
-                                    Singleton.getInstance().setHotplate_jeonboon_6_remarks(item.getHotplate_jeonboon_6_marks());
-                                    Singleton.getInstance().setWaterbath_chungsin_remarks(item.getWaterbath_chungsin_marks());
-                                    Singleton.getInstance().setWaterbath_advantec_remarks(item.getWaterbath_advantec_marks());
-                                    Singleton.getInstance().setWaterbath_gagong_remarks(item.getWaterbath_gagong_marks());
-                                    Singleton.getInstance().setAas_remarks(item.getAas_marks());
-                                    Singleton.getInstance().setAutoclave_remarks(item.getAutoclave_marks());
-                                    Singleton.getInstance().setFlammable_remarks(item.getFlammable_marks());
-
-                                    // 검사 여부 받아오기
-                                    Singleton.getInstance().setHwaehwa_left(item.getHwaehwa_left());
-                                    Singleton.getInstance().setHwaehwa_right(item.getHwaehwa_right());
-                                    Singleton.getInstance().setHwaehwa_kildal(item.getHwaehwa_kildal());
-                                    Singleton.getInstance().setHotplate_hwaehwaside(item.getHotplate_hwaehwaside());
-                                    Singleton.getInstance().setHotplate_jaedang_left(item.getHotplate_jaedang_left());
-                                    Singleton.getInstance().setHotplate_jaedang_right(item.getHotplate_jaedang_right());
-                                    Singleton.getInstance().setHotplate_jeonboon_6(item.getHotplate_jeonboon_6());
-                                    Singleton.getInstance().setWaterbath_chungsin(item.getWaterbath_chungsin());
-                                    Singleton.getInstance().setwaterbath_advantec(item.getWaterbath_advantec());
-                                    Singleton.getInstance().setWaterbath_gagong(item.getWaterbath_gagong());
-                                    Singleton.getInstance().setAas(item.getAas());
-                                    Singleton.getInstance().setAutoclave(item.getAutoclave());
-                                    Singleton.getInstance().setFlammable(item.getFlammable());
-                                }
-
-                                Log.e("hwaehwa left", Singleton.getInstance().getHwaehwa_left()+"");
-                                Log.e("hwaehwa right ", Singleton.getInstance().getHwaehwa_right()+"");
-                            }
-                            else
-                            {
-                                // 오늘 일정으로 인스턴스 생성
-                            }
                          }
                     });
-                } catch (final Exception e){
-                    Log.e("Async", "error");
+                } catch (final Exception e)
+                {
+                    Log.e("Async", "Get error");
                 }
                 return null;
             }
         };
 
         runAsyncTask(task);
+    }
+
+    public void addItem()
+    {
+        if (mClient == null) {
+            return;
+        }
+
+        // Create a new item
+        final CheckTable item = new CheckTable();
+
+        item.setDate(stringDate);
+
+        // Insert the new item
+        AsyncTask<Void, Void, Void> task =
+                new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    final CheckTable entity = addItemInTable(item);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // UI 작업
+                        }
+                    });
+                } catch (final Exception e) {
+                    createAndShowDialogFromTask(e, "Error");
+                }
+                return null;
+            }
+        };
+
+        runAsyncTask(task);
+
+    }
+
+    public CheckTable addItemInTable(CheckTable item) throws ExecutionException, InterruptedException
+    {
+        CheckTable entity = mCheckTable.insert(item).get();
+        return entity;
     }
 
     private AsyncTask<Void, Void, Void> runAsyncTask(AsyncTask<Void, Void, Void> task) {
@@ -171,4 +220,28 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void createAndShowDialogFromTask(final Exception exception, String title) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                createAndShowDialog(exception, "Error");
+            }
+        });
+    }
+
+    private void createAndShowDialog(Exception exception, String title) {
+        Throwable ex = exception;
+        if(exception.getCause() != null){
+            ex = exception.getCause();
+        }
+        createAndShowDialog(ex.getMessage(), title);
+    }
+
+    private void createAndShowDialog(final String message, final String title) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(message);
+        builder.setTitle(title);
+        builder.create().show();
+    }
 }
