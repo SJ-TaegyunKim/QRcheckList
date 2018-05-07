@@ -45,14 +45,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         btnGenerateClick = (Button)findViewById(R.id.btn_generateQR);
-    }
-
-    public void detectClick(View v){
-        new IntentIntegrator(this).initiateScan();
 
         now = System.currentTimeMillis();
         date = new Date(now);
         stringDate = dateFormat.format(date);
+        Singleton.getInstance().setDate(stringDate);
 
         try
         {
@@ -74,6 +71,10 @@ public class MainActivity extends AppCompatActivity
         } catch(IOException e) { Log.e("MobileServiceClient","error");}
 
         getAllData();
+    }
+
+    public void detectClick(View v){
+        new IntentIntegrator(this).initiateScan();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -113,6 +114,8 @@ public class MainActivity extends AppCompatActivity
                         Log.e("Results count ", results.size()+"");
                         for (CheckTable item : results)
                         {
+                            Singleton.getInstance().setId(item.getId());
+
                             // 검사 비고란 정보 받아오기
                             Singleton.getInstance().setHwaehwa_left_remarks(item.getHwaehwa_left_marks());
                             Singleton.getInstance().setHwaehwa_right_remarks(item.getHwaehwa_right_marks());
@@ -149,8 +152,6 @@ public class MainActivity extends AppCompatActivity
                         // 오늘 일정으로 인스턴스 생성
                         CheckTable item = new CheckTable();
                         item.setDate(stringDate);
-
-                        Log.e("insert try", "insert trying");
                         addItem();
 
                     }
@@ -188,7 +189,7 @@ public class MainActivity extends AppCompatActivity
             protected Void doInBackground(Void... params) {
                 try {
                     final CheckTable entity = addItemInTable(item);
-
+                    Singleton.getInstance().setId(entity.getId());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -203,7 +204,6 @@ public class MainActivity extends AppCompatActivity
         };
 
         runAsyncTask(task);
-
     }
 
     public CheckTable addItemInTable(CheckTable item) throws ExecutionException, InterruptedException

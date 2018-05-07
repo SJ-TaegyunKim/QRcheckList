@@ -7,6 +7,10 @@ public class Singleton {
 
     private boolean checkFail;
     private String checkEdit;
+
+    private String date;
+    private String id;
+
     // 회화로
     private int hwaehwa_left;
     private String hwaehwa_left_remarks;
@@ -54,6 +58,14 @@ public class Singleton {
         }
         return instance;
     }
+
+    public void setId(String id) { this.id = id;}
+
+    public String getId() { return id; }
+
+    public void setDate(String date) { this.date = date;}
+
+    public String getDate() { return date; }
 
     // checkFail Get, Set
     public boolean getCheckFail() {
