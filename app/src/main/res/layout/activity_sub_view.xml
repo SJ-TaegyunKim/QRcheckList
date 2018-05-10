@@ -18,6 +18,5 @@
             android:layout_height="wrap_content"
             android:hint="불합격 이유를 적어주세요."
             android:textSize="20dp"/>
-
     </LinearLayout>
 </LinearLayout>

@@ -7,6 +7,7 @@ public class Singleton {
 
     private boolean checkFail;
     private String checkEdit;
+    /*
     // 회화로
     private boolean hwaehwa_left;
     private String hwaehwa_left_remarks;
@@ -42,7 +43,7 @@ public class Singleton {
     // Flammable
     private boolean flammable;
     private String flammable_remarks;
-
+    */
 
     public static Singleton getInstance() {
         if (instance == null) {
@@ -63,7 +64,7 @@ public class Singleton {
     public void setCheckFail(boolean checkFail) {
         this.checkFail = checkFail;
     }
-
+/*
     public String getCheckEdit() {
         return this.checkEdit;
     }
@@ -283,5 +284,5 @@ public class Singleton {
 
     public void setFlammable_remarks(String flammable_remarks) {
         this.flammable_remarks = flammable_remarks;
-    }
+    }*/
 }

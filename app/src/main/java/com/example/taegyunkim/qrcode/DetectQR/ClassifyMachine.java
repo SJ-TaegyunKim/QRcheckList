@@ -16,6 +16,9 @@ import com.example.taegyunkim.qrcode.Etc.SubView;
 import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.example.taegyunkim.qrcode.R;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 public class ClassifyMachine extends AppCompatActivity {
     String machineName; // getIntent 에서 값을 받기 위한 변수
     boolean machineCheck;
@@ -35,8 +38,14 @@ public class ClassifyMachine extends AppCompatActivity {
         setContentView(R.layout.activity_classify_machine);
         Intent intent = getIntent();
         machineName = intent.getExtras().getString("result");
+        try{
+            machineName = URLDecoder.decode(machineName,"UTF-8");
+        } catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
         textView = (TextView)findViewById(R.id.machineName);
         sRadio = (RadioButton)findViewById(R.id.checkO);
+
         fRadio = (RadioButton)findViewById(R.id.checkX);
         submit = (Button)findViewById(R.id.submit);
 
@@ -58,7 +67,7 @@ public class ClassifyMachine extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkNonPass = Singleton.getInstance().getCheckFail();
-                if(checkNonPass == false){ // 싱글톤 사용하지 않으면
+                if(checkNonPass == false){ // 싱글톤 사용하지 않으면 계속 동적으로 만듬
                     checkNonPass = true;
                     Singleton.getInstance().setCheckFail(checkNonPass);
                     SubView newLayout= new SubView(getApplicationContext());
@@ -72,15 +81,15 @@ public class ClassifyMachine extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() { // submit 클릭 이벤트
             @Override
             public void onClick(View view) {
-
-                if (sRadio.isChecked()) { // sRadio 체크 되어있을 때
+                if (sRadio.isChecked()) {                                 // sRadio 체크 되어있을 때
                     // machineName                                        // 기계명  ex) 회화로(좌),회화로(우)
                     // machineCheck = true                                // 기계 합,불 체크 ex) PASS,Non-Pass
                     // reasonForNonPass = null;                           // DB NotNULL 이면 아무 문자열이라도 바꿀 것.
-                } else { // fRadio 체크 되어있을 때
+                }
+                else {                                                    // fRadio 체크 되어있을 때
                     // machineName                                        // 기계명  ex) 회화로(좌),회화로(우)
                     // machineCheck = false                               // 기계 합,불 체크 ex) PASS,Non-Pass
-                    editText = (EditText) findViewById(R.id.checkFailExplain);
+                    editText = (EditText) findViewById(R.id.checkFailExplain); // 불합격 사유 editText 와 연결
                     // reasonForNonPass = editText.getText().toString();; // Non-Pass 이유 넣기
                 }
             }

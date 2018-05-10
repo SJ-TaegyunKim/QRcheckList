@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 
 import com.example.taegyunkim.qrcode.R;
 
+// 동적으로 불합격 사유를 할당하기 위한 클래스 ( 중요 X )
 public class SubView extends LinearLayout {
 
     public SubView(Context context, AttributeSet attrs) {
