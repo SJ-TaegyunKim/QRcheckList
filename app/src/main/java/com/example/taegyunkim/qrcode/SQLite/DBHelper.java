@@ -78,8 +78,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor;
 
-        cursor = db.rawQuery("SELECT * FROM Ingredion",null);
-        String dateCheck;
+        cursor = db.rawQuery("SELECT date FROM Ingredion",null); // columns 가 아니라
+
+        String dateCheck; // date 값 정정을 위한 String 변수
 
         while (cursor.moveToNext()){
             dateCheck = cursor.getString(cursor.getColumnIndex("date"));

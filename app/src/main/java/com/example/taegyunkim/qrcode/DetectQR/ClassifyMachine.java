@@ -45,7 +45,6 @@ public class ClassifyMachine extends AppCompatActivity {
         }
         textView = (TextView)findViewById(R.id.machineName);
         sRadio = (RadioButton)findViewById(R.id.checkO);
-
         fRadio = (RadioButton)findViewById(R.id.checkX);
         submit = (Button)findViewById(R.id.submit);
 
@@ -82,6 +81,9 @@ public class ClassifyMachine extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (sRadio.isChecked()) {                                 // sRadio 체크 되어있을 때
+                    // 1. select 문을 통해 해당 컬럼 존재하는지 조사.
+                    // 2. 없으면 Toast 메시지 띄울 것.
+                    // 2-1. 있으면 update 진행하고 비고는 null 값으로 초기화 할 것.
                     // machineName                                        // 기계명  ex) 회화로(좌),회화로(우)
                     // machineCheck = true                                // 기계 합,불 체크 ex) PASS,Non-Pass
                     // reasonForNonPass = null;                           // DB NotNULL 이면 아무 문자열이라도 바꿀 것.

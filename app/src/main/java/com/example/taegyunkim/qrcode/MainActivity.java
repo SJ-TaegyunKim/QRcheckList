@@ -48,20 +48,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         helper = new DBHelper(this, dbName,null,1);
-        try {
-            Date date = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String getDate = sdf.format(date);
-            // insert 날짜
-
-            //helper.insert(getDate);
-            //helper.addAlter("회화로좌");
-            //helper.select();
-        }catch (SQLiteException e){
-            e.printStackTrace();
-            finish();
-        }
     }
+
     public void detectClick(View v){
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -69,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         helper.select(getDate); // PRIMARY KEY Exist check
 
+        // Singleton Datecheck 'True'일 시 그냥 QRcode Recorder 실행
         if(Singleton.getInstance().getDateCheck()) {
             new IntentIntegrator(this).initiateScan();
         }
@@ -99,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 classifyString = new Intent(getApplicationContext(), ClassifyMachine.class);
-                classifyString.putExtra("result",result.getContents());
+                classifyString.putExtra("result",temp);
                 startActivity(classifyString);
             } else {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
