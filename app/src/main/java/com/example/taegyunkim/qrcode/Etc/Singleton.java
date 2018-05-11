@@ -6,44 +6,7 @@ public class Singleton {
     private static volatile Singleton instance = null;
 
     private boolean checkFail;
-    private String checkEdit;
-    /*
-    // 회화로
-    private boolean hwaehwa_left;
-    private String hwaehwa_left_remarks;
-    private boolean hwaehwa_right;
-    private String hwaehwa_right_remarks;
-    private boolean hwaehwa_kildal;
-    private String hwaehwa_kildal_remarks;
-
-    // Hot Plate
-    private boolean hotplate_hwaehwaside;
-    private String hotplate_hwaehwaside_remarks;
-    private boolean hotplate_jaedang_left;
-    private String hotplate_jaedang_left_remarks;
-    private boolean hotplate_jaedang_right;
-    private String hotplate_jaedang_right_remarks;
-    private boolean hotplate_jeonboon_6;
-    private String hotplate_jeonboon_6_remarks;
-
-    // WaterBath
-    private boolean waterbath_chungsin;
-    private String waterbath_chungsin_remarks;
-    private boolean waterbath_advantec;
-    private String waterbath_advantec_remarks;
-    private boolean waterbath_gagong;
-    private String waterbath_gagong_remarks;
-
-    // AAS
-    private boolean aas;
-    private String aas_remarks;
-    private boolean autoclave;
-    private String autoclave_remarks;
-
-    // Flammable
-    private boolean flammable;
-    private String flammable_remarks;
-    */
+    private boolean dateCheck;
 
     public static Singleton getInstance() {
         if (instance == null) {
@@ -64,6 +27,10 @@ public class Singleton {
     public void setCheckFail(boolean checkFail) {
         this.checkFail = checkFail;
     }
+
+    public boolean getDateCheck() { return this.dateCheck; }
+
+    public void setDateCheck(boolean dateCheck) { this.dateCheck = dateCheck; }
 /*
     public String getCheckEdit() {
         return this.checkEdit;

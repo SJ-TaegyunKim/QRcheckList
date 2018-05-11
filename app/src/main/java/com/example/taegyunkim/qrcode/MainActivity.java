@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.taegyunkim.qrcode.DetectQR.ClassifyMachine;
+import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.example.taegyunkim.qrcode.GenerateQR.GenerateQRcode;
 import com.example.taegyunkim.qrcode.SQLite.DBHelper;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -48,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
         helper = new DBHelper(this, dbName,null,1);
         try {
-            db = helper.getWritableDatabase();
-            // PRIMARY KEY 인 날짜 받아오기
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String getDate = sdf.format(date);
@@ -57,14 +56,26 @@ public class MainActivity extends AppCompatActivity {
 
             //helper.insert(getDate);
             //helper.addAlter("회화로좌");
-            helper.select();
+            //helper.select();
         }catch (SQLiteException e){
             e.printStackTrace();
             finish();
         }
     }
     public void detectClick(View v){
-        new IntentIntegrator(this).initiateScan();
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String getDate = sdf.format(date);
+
+        helper.select(getDate); // PRIMARY KEY Exist check
+
+        if(Singleton.getInstance().getDateCheck()) {
+            new IntentIntegrator(this).initiateScan();
+        }
+        else{
+            helper.insert(getDate);
+            new IntentIntegrator(this).initiateScan();
+        }
     }
 
     @Override

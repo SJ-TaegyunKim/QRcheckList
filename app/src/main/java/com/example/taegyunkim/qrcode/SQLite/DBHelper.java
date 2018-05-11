@@ -9,6 +9,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.taegyunkim.qrcode.Etc.Singleton;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -42,17 +44,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public void insert(String date) {
         // 읽고 쓰기가 가능하게 DB 열기
         SQLiteDatabase db = getWritableDatabase();
-        Log.d(tag,"insertSQL");
         ContentValues values = new ContentValues();
+
         values.put("date",date);
-        db.insert("Ingredion",null,values);
+        db.insert("Ingredion",null, values);
         //db.execSQL("INSERT INTO Ingredion VALUES (date,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)");
         db.close();
     }
 
     public void update(String column, String value, boolean checkValue) {
         SQLiteDatabase db = getWritableDatabase();
-        // 입력한 항목과 일치하는 행의 가격 정보 수정
         ContentValues values = new ContentValues();
        // db.update("Ingredion",values)
 
@@ -72,11 +73,28 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
+    // Override select(String input)
+    public void select(String columns){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor;
+
+        cursor = db.rawQuery("SELECT * FROM Ingredion",null);
+        String dateCheck;
+
+        while (cursor.moveToNext()){
+            dateCheck = cursor.getString(cursor.getColumnIndex("date"));
+            if (dateCheck.equals(columns)){
+                Singleton.getInstance().setDateCheck(true);
+            }
+        }
+    }
+
+    // addAlter 시 컬럼이 존재하는지 먼저 파악할 것
     public void addAlter(String item){
         SQLiteDatabase db = getWritableDatabase();
         // 입력한 항목과 일치하는 행 삭제
-
-        db.execSQL("ALTER TABLE Ingredion ADD COLUMN"+item+"TEXT");
+        // Alter Error
+        db.execSQL("ALTER TABLE Ingredion ADD "+item+" TEXT");
         Log.d(tag,"addAlter");
         db.close();
     }
