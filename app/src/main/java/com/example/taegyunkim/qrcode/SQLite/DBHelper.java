@@ -107,5 +107,4 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("ALTER TABLE Ingredion RENAME COLUMN"+oldColumn+"TO"+newColumn);
         db.close();
     }
-    //public void select(String )
 }
