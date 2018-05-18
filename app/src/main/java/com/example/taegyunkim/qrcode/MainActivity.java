@@ -1,5 +1,6 @@
 package com.example.taegyunkim.qrcode;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -10,12 +11,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.example.taegyunkim.qrcode.DetectQR.ClassifyMachine;
 import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.example.taegyunkim.qrcode.GenerateQR.GenerateQRcode;
 import com.example.taegyunkim.qrcode.SQLite.DBHelper;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.util.Log;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -23,7 +34,8 @@ import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     private DBHelper helper;
     String dbName = "IngreDBfile.db";
     public SQLiteDatabase db; // 삭제요망
@@ -32,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
     Button btnGenerateClick;
     String temp;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -51,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void detectClick(View v){
+
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String getDate = sdf.format(date);
@@ -65,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
             helper.insert(getDate);
             new IntentIntegrator(this).initiateScan();
         }
+
     }
 
     @Override
@@ -97,5 +111,4 @@ public class MainActivity extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
 }
