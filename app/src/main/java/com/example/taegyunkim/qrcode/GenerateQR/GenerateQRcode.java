@@ -1,5 +1,6 @@
 package com.example.taegyunkim.qrcode.GenerateQR;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.nfc.Tag;
@@ -8,9 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.taegyunkim.qrcode.R;
@@ -32,13 +35,16 @@ import java.net.URLEncoder;
 public class GenerateQRcode extends AppCompatActivity {
     ImageView imageView;
     Bitmap bitmap;
+    EditText edit;
     String content; // 입력 된 문자열 읽기 위한 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_qrcode);
+        RelativeLayout rl = (RelativeLayout)findViewById(R.id.relativeLayOut);
         imageView = (ImageView) findViewById(R.id.iv_generated_qrcode);
+        edit = (EditText)findViewById(R.id.edit_QRtext);
         findViewById(R.id.btn_generatorQR).setOnClickListener(new View.OnClickListener() { // generate 버튼 클릭 시
             @Override
             public void onClick(View v) {
@@ -56,6 +62,15 @@ public class GenerateQRcode extends AppCompatActivity {
                 }
             }
         });
+        rl.setOnClickListener(new View.OnClickListener() { // 레이아웃 클릭 시 자판 내려가기
+            @Override
+            public void onClick(View view) {
+                //TODO Auto-generated method stub
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(edit.getWindowToken(),0);
+            }
+        });
+
         Button btnSaveQR = (Button)findViewById(R.id.btn_saveQR); // save 버튼 클릭 시
         btnSaveQR.setOnClickListener(new View.OnClickListener() {
             @Override

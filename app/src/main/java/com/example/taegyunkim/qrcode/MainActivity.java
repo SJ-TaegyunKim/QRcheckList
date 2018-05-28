@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity
 {
     private DBHelper helper;
     String dbName = "IngreDBfile.db";
-    public SQLiteDatabase db; // 삭제요망
 
     Intent classifyString;
     Button btnGenerateClick;

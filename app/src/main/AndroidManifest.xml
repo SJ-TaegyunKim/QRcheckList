@@ -2,9 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.taegyunkim.qrcode">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
 
     <application
         android:allowBackup="true"
@@ -22,7 +21,8 @@
         </activity>
         <activity android:name=".GenerateQR.GenerateQRcode" />
         <activity android:name=".DetectQR.ClassifyMachine" />
-        <activity android:name=".Etc.SubView"></activity>
+        <activity android:name=".Etc.SubView" />
+        <activity android:name=".ChangeColumn"></activity>
     </application>
 
 </manifest>
