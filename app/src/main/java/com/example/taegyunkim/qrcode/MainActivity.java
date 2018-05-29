@@ -1,7 +1,10 @@
 package com.example.taegyunkim.qrcode;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,7 @@ import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.example.taegyunkim.qrcode.DetectQR.ClassifyMachine;
 import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.example.taegyunkim.qrcode.GenerateQR.GenerateQRcode;
+import com.example.taegyunkim.qrcode.SQLite.ChangeColumn;
 import com.example.taegyunkim.qrcode.SQLite.DBHelper;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -37,10 +41,12 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity
 {
     private DBHelper helper;
-    String dbName = "IngreDBfile.db";
+    String dbName = "IngrediDBfile.db";
+    //public SQLiteDatabase db;
 
     Intent classifyString;
     Button btnGenerateClick;
+    Button btnChangeColumns;
     String temp;
 
     @Override
@@ -57,9 +63,21 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent); // GenerateQRcode 로 이동
             }
         });
+        btnChangeColumns = (Button)findViewById(R.id.btn_changeColumn);
+        btnChangeColumns.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ChangeColumn.class);
+                startActivity(intent);
+            }
+        });
+        // sharedPreference로 array[0]부터 저장할것
+        String[] column={"회화로_좌","회화로_좌_explain","회화로_우","회화로_우_explain","회화로_킬달용","회화로_킬달용_explain","Hotplate_회화로옆","Hotplate_회화로옆_explain","Hotplate_제당좌","Hotplate_제당좌_explain","Hotplate_제당우","Hotplate_제당우_explain","Hotplate_전분6구","Hotplate_전분6구_explain","Water_bath_청신","Water_bath_청신_explain","Water_bath_Advantec","Water_bath_Advantec_explain","Water_bath_가공전분","Water_bath_가공전분_explain","AAS","AAS_explain","Auto_Clave","Auto_Clave_explain","인화성물질보관","인화성물질보관_explain"};
+        saveArray(column, "columnName", getApplicationContext());
 
         helper = new DBHelper(this, dbName,null,1);
     }
+
 
     public void detectClick(View v){
 
@@ -109,5 +127,15 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    public boolean saveArray(String[] array, String arrayName, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("columnName", 0);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putInt(arrayName +"_size", array.length);
+        for(int i=0;i<array.length;i++)
+            editor.putString(arrayName + "_" + i, array[i]);
+        return editor.commit();
     }
 }

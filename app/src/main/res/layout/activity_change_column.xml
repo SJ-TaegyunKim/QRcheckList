@@ -4,8 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center_vertical|center_horizontal"
     android:id="@+id/relativeLayOutinChangeColumn"
-    tools:context=".ChangeColumn">
+    tools:context=".SQLite.ChangeColumn">
 
-    
+
+    <Spinner
+        android:id="@+id/spinnerinChangeColumn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="40dp"
+        android:layout_centerVertical="true" />
+
+    <EditText
+        android:id="@+id/editTextinChangeColumn"
+        android:ems="20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/textViewinChangeColumn"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="50dp"
+        android:hint="원하시는 컬럼을 입력해주세요." />
+
+    <TextView
+        android:id="@+id/textViewinChangeColumn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/spinnerinChangeColumn"
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"
+        android:textSize="20dp"
+        android:layout_marginLeft="20dp"
+        android:text="To" />
+
+    <Button
+        android:id="@+id/buttoninChangeColumn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinnerinChangeColumn"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="변경" />
 </RelativeLayout>

@@ -26,4 +26,13 @@
         android:text="+"
         tools:layout_editor_absoluteX="40dp"
         tools:layout_editor_absoluteY="40dp" />
+    <Button
+        android:id="@+id/btn_changeColumn"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="Column"
+        android:layout_below="@+id/btn_generateQR"
+        tools:layout_editor_absoluteX="40dp"
+        tools:layout_editor_absoluteY="40dp" />
 </RelativeLayout>
