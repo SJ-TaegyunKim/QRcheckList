@@ -1,10 +1,15 @@
 package com.example.taegyunkim.qrcode.GenerateQR;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.nfc.Tag;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.support.design.widget.Snackbar;
 
 import com.example.taegyunkim.qrcode.R;
 import com.google.zxing.BarcodeFormat;
@@ -38,13 +44,26 @@ public class GenerateQRcode extends AppCompatActivity {
     EditText edit;
     String content; // 입력 된 문자열 읽기 위한 변수
 
+    public static final int WRITE_STORAGE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_qrcode);
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+
+            }else{
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_STORAGE);
+            }
+        }
+
         RelativeLayout rl = (RelativeLayout)findViewById(R.id.relativeLayOut);
         imageView = (ImageView) findViewById(R.id.iv_generated_qrcode);
         edit = (EditText)findViewById(R.id.edit_QRtext);
+
+
         findViewById(R.id.btn_generatorQR).setOnClickListener(new View.OnClickListener() { // generate 버튼 클릭 시
             @Override
             public void onClick(View v) {
@@ -60,12 +79,19 @@ public class GenerateQRcode extends AppCompatActivity {
                 } else {
                     generateQRcode(content);
                 }
+
+                // Generate 하면 자판 내려가게끔 설정
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(edit.getWindowToken(),0);
+
             }
         });
         rl.setOnClickListener(new View.OnClickListener() { // 레이아웃 클릭 시 자판 내려가기
             @Override
             public void onClick(View view) {
                 //TODO Auto-generated method stub
+
+                // 화면 어디서든 클릭하면 자판 내려가게 설정
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(edit.getWindowToken(),0);
             }
@@ -77,27 +103,9 @@ public class GenerateQRcode extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     if (bitmap != null) {
-                        String exStoragePath = "/sdcard/";
-                        String fileName = content+".jpg";
-                        Toast.makeText(getApplicationContext(),exStoragePath,Toast.LENGTH_LONG).show();
-                        //경로 잘못됐다.경로 다시 설정할 것.
-
-                        File file = new File(exStoragePath);
-                        if(!file.exists()) // 폴더 없으면 생성
-                            file.mkdir();
-
-                        try{
-                            FileOutputStream out = new FileOutputStream(exStoragePath+fileName);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                            out.close();
-
-                            Toast.makeText(getApplicationContext(),"File Save OK",Toast.LENGTH_LONG).show();
-
-                        }catch (FileNotFoundException exception){
-                            Log.e("FileNotFoundException", exception.getMessage());
-                        }catch (IOException e){
-                            Log.e("IOException", e.getMessage());
-                        }
+                        MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, content.toString()+".jpg", content.toString() + ".jpg");
+                        Snackbar.make(view, "갤러리에 이미지가 저장되었습니다.", Snackbar.LENGTH_LONG).show();
+                        // 이후 setAction 으로 이동버튼 누를시 갤러리로 바로 이동하게끔 하면 좋을 듯.
                     }
                     else{
                         Toast.makeText(getApplicationContext(),"Not save BMP",Toast.LENGTH_SHORT).show();
@@ -129,5 +137,26 @@ public class GenerateQRcode extends AppCompatActivity {
             }
         }
         return bmp;
+    }
+
+    // 권한 Override
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case WRITE_STORAGE:
+                for (int i = 0; i < permissions.length; i++) {
+                    String permission = permissions[i];
+                    int grantResult = grantResults[i];
+                    if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                            Log.e("Permission","Permission");
+                        } else {
+                            Log.e("Permission error","Permission error");
+                        }
+                    }
+                }
+                break;
+        }
     }
 }
