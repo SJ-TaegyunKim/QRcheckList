@@ -71,31 +71,28 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
         // sharedPreference로 array[0]부터 저장할것
         String[] column={"회화로_좌","회화로_좌_explain","회화로_우","회화로_우_explain","회화로_킬달용","회화로_킬달용_explain","Hotplate_회화로옆","Hotplate_회화로옆_explain","Hotplate_제당좌","Hotplate_제당좌_explain","Hotplate_제당우","Hotplate_제당우_explain","Hotplate_전분6구","Hotplate_전분6구_explain","Water_bath_청신","Water_bath_청신_explain","Water_bath_Advantec","Water_bath_Advantec_explain","Water_bath_가공전분","Water_bath_가공전분_explain","AAS","AAS_explain","Auto_Clave","Auto_Clave_explain","인화성물질보관","인화성물질보관_explain"};
         saveArray(column, "columnName", getApplicationContext());
 
         helper = new DBHelper(this, dbName,null,1);
+        helper.insert();
     }
 
 
     public void detectClick(View v){
 
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String getDate = sdf.format(date);
-
-        helper.select(getDate); // PRIMARY KEY Exist check
+        helper.select(Singleton.getInstance().getDate()); // PRIMARY KEY Exist check
 
         // Singleton Datecheck 'True'일 시 그냥 QRcode Recorder 실행
         if(Singleton.getInstance().getDateCheck()) {
             new IntentIntegrator(this).initiateScan();
         }
         else{
-            helper.insert(getDate);
+            helper.insert();
             new IntentIntegrator(this).initiateScan();
         }
-
     }
 
     @Override

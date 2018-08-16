@@ -22,7 +22,6 @@ import java.util.Date;
 
 public class DBHelper extends SQLiteOpenHelper {
     private String tag = "TEST";
-    private Context context;
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context,  name , factory, version);
@@ -33,7 +32,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // 새로운 테이블 생성
         // 이름은 ingredion
+
+        // date 만들어주기
+        String date = Singleton.getInstance().getDate();
+
         db.execSQL("CREATE TABLE if not exists Ingredion (date text primary key, 회화로_좌 text,회화로_좌_explain text,회화로_우 text,회화로_우_explain text,회화로_킬달용 text,회화로_킬달용_explain text,Hotplate_회화로옆 text,Hotplate_회화로옆_explain text,Hotplate_제당좌 text,Hotplate_제당좌_explain text,Hotplate_제당우 text,Hotplate_제당우_explain text,Hotplate_전분6구 text,Hotplate_전분6구_explain text,Water_bath_청신 text,Water_bath_청신_explain text,Water_bath_Advantec text,Water_bath_Advantec_explain text,Water_bath_가공전분 text,Water_bath_가공전분_explain text,AAS text,AAS_explain text,Auto_Clave text,Auto_Clave_explain text,인화성물질보관 text,인화성물질보관_explain text, 점검자 text)"); // 이름 바꿀것
+        //insert();
         Log.d(tag,"onCreate");
     }
 
@@ -42,14 +46,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void insert(String date) {
+    public void insert() {
         // 읽고 쓰기가 가능하게 DB 열기
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put("date",date);
+        values.put("date",Singleton.getInstance().getDate());
         db.insert("Ingredion",null, values);
-        //db.execSQL("INSERT INTO Ingredion VALUES (date,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)");
+        db.execSQL("INSERT INTO Ingredion VALUES (date,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)");
         db.close();
     }
 

@@ -1,12 +1,16 @@
 package com.example.taegyunkim.qrcode.Etc;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 // 싱글톤 패턴
 public class Singleton {
     private static volatile Singleton instance = null;
 
     private boolean checkFail;
     private boolean dateCheck;
+    private String date;
 
     public static Singleton getInstance() {
         if (instance == null) {
@@ -32,4 +36,13 @@ public class Singleton {
 
     public void setDateCheck(boolean dateCheck) { this.dateCheck = dateCheck; }
 
+    public String getDate(){ return this.date; }
+
+    public void setDate(String date){
+        Date dateTemp = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String getDate = sdf.format(dateTemp);
+
+        this.date = getDate;
+    }
 }
