@@ -5,26 +5,52 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.taegyunkim.qrcode.R;
 
 public class ChangeColumn extends AppCompatActivity {
     public Context context;
+    private EditText newColumn;
+    private Spinner spinner;
+    String dbName = "IngrediDBfile.db";
+    private DBHelper dbHelper = new DBHelper(this, dbName,null,1);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_column);
+
+        findViewById(R.id.buttoninChangeColumn).setOnClickListener(alertClickListener);
+        newColumn = (EditText)findViewById(R.id.editTextinChangeColumn);
+
         context = getApplicationContext();
         String[] columnInfo = loadArray("columnName",context);
-        Spinner spinner = (Spinner)findViewById(R.id.spinnerinChangeColumn);
+        spinner = (Spinner)findViewById(R.id.spinnerinChangeColumn);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, R.layout.custom_simple_dropdown_item_1line,columnInfo);
         spinner.setAdapter(adapter);
         spinner.setSelection(0);
     }
+
+    Button.OnClickListener alertClickListener = new View.OnClickListener() {
+        public void onClick(View v)
+        {
+            String newColumnName;
+            String currentColumnName;
+
+            newColumnName = newColumn.getText().toString();
+            currentColumnName = spinner.getSelectedItem().toString();
+
+            dbHelper.alter(currentColumnName, newColumnName);
+        }
+    };
 
     // Device File Explorer -> data/data/com.example.taegyunkim.qrcode/databases/IngrediDBfile.db
     // 오른 클릭 -> Save as -> 바탕화면

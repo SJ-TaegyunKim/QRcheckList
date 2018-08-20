@@ -19,6 +19,7 @@ import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.example.taegyunkim.qrcode.GenerateQR.GenerateQRcode;
 import com.example.taegyunkim.qrcode.SQLite.ChangeColumn;
 import com.example.taegyunkim.qrcode.SQLite.DBHelper;
+import com.facebook.stetho.Stetho;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import android.os.AsyncTask;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Stetho.initializeWithDefaults(this);
 
         btnGenerateClick = (Button)findViewById(R.id.btn_generateQR);
         btnGenerateClick.setOnClickListener(new View.OnClickListener(){
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         saveArray(column, "columnName", getApplicationContext());
 
         helper = new DBHelper(this, dbName,null,1);
-        helper.insert();
+        //helper.insert();
     }
 
 

@@ -1,26 +1,15 @@
 package com.example.taegyunkim.qrcode.SQLite;
-
-import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.example.taegyunkim.qrcode.Etc.Singleton;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class DBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper
+{
     private String tag = "TEST";
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -53,7 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         values.put("date",Singleton.getInstance().getDate());
         db.insert("Ingredion",null, values);
-        db.execSQL("INSERT INTO Ingredion VALUES (date,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)");
+        //db.execSQL("INSERT INTO Ingredion VALUES (date,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)");
         db.close();
     }
 
@@ -109,7 +98,11 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         // 입력한 항목과 일치하는 행 삭제
 
-        db.execSQL("ALTER TABLE Ingredion RENAME COLUMN"+oldColumn+"TO"+newColumn);
+        db.execSQL("ALTER TABLE Ingredion RENAME TO Ingredion2");
+        db.execSQL("CREATE TABLE Ingredion (date text primary key, 회화로_좌 text,회화로_좌_explain text,회화로_우 text,회화로_우_explain text,회화로_킬달용 text,회화로_킬달용_explain text,Hotplate_회화로옆 text,Hotplate_회화로옆_explain text,Hotplate_제당좌 text,Hotplate_제당좌_explain text,Hotplate_제당우 text,Hotplate_제당우_explain text,Hotplate_전분6구 text,Hotplate_전분6구_explain text,Water_bath_청신 text,Water_bath_청신_explain text,Water_bath_Advantec text,Water_bath_Advantec_explain text,Water_bath_가공전분 text,Water_bath_가공전분_explain text,AAS text,AAS_explain text,Auto_Clave text,Auto_Clave_explain text,인화성물질보관 text,인화성물질보관_explain text, 점검자 text)");
+
+        //db.execSQL("ALTER TABLE Ingredion RENAME COLUMN '"+oldColumn+"' TO '"+newColumn + "");
+        //db.execSQL("ALTER TABLE Ingredion ADD COLUMN "+newColumn);
         db.close();
     }
 }
