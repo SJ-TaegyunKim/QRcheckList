@@ -24,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private String tag = "TEST";
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context,  name , factory, version);
+        super(context, name , factory, version);
     }
 
     // DB를 새로 생성할 때 호출되는 함수
@@ -37,7 +37,6 @@ public class DBHelper extends SQLiteOpenHelper {
         String date = Singleton.getInstance().getDate();
 
         db.execSQL("CREATE TABLE if not exists Ingredion (date text primary key, 회화로_좌 text,회화로_좌_explain text,회화로_우 text,회화로_우_explain text,회화로_킬달용 text,회화로_킬달용_explain text,Hotplate_회화로옆 text,Hotplate_회화로옆_explain text,Hotplate_제당좌 text,Hotplate_제당좌_explain text,Hotplate_제당우 text,Hotplate_제당우_explain text,Hotplate_전분6구 text,Hotplate_전분6구_explain text,Water_bath_청신 text,Water_bath_청신_explain text,Water_bath_Advantec text,Water_bath_Advantec_explain text,Water_bath_가공전분 text,Water_bath_가공전분_explain text,AAS text,AAS_explain text,Auto_Clave text,Auto_Clave_explain text,인화성물질보관 text,인화성물질보관_explain text, 점검자 text)"); // 이름 바꿀것
-        //insert();
         Log.d(tag,"onCreate");
     }
 
@@ -53,14 +52,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
         values.put("date",Singleton.getInstance().getDate());
         db.insert("Ingredion",null, values);
-        db.execSQL("INSERT INTO Ingredion VALUES (date,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)");
+        //db.execSQL("INSERT INTO Ingredion VALUES (date,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)");
         db.close();
     }
 
     public void update(String column, String value, boolean checkValue) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-       // db.update("Ingredion",values)
+        //db.update("Ingredion",values)
 
         db.close();
     }
@@ -99,6 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void addAlter(String item){
         SQLiteDatabase db = getWritableDatabase();
         // 입력한 항목과 일치하는 행 삭제
+
         // Alter Error
         db.execSQL("ALTER TABLE Ingredion ADD "+item+" TEXT");
         Log.d(tag,"addAlter");

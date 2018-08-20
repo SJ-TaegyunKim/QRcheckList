@@ -20,11 +20,20 @@ import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.example.taegyunkim.qrcode.GenerateQR.GenerateQRcode;
 import com.example.taegyunkim.qrcode.SQLite.ChangeColumn;
 import com.example.taegyunkim.qrcode.SQLite.DBHelper;
+import com.facebook.stetho.Stetho;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Stetho.initializeWithDefaults(this);
 
         btnGenerateClick = (Button)findViewById(R.id.btn_generateQR);
         btnGenerateClick.setOnClickListener(new View.OnClickListener(){
@@ -77,7 +87,8 @@ public class MainActivity extends AppCompatActivity
         saveArray(column, "columnName", getApplicationContext());
 
         helper = new DBHelper(this, dbName,null,1);
-        helper.insert();
+        //helper.insert();
+        saveDB();
     }
 
 
@@ -134,5 +145,36 @@ public class MainActivity extends AppCompatActivity
         for(int i=0;i<array.length;i++)
             editor.putString(arrayName + "_" + i, array[i]);
         return editor.commit();
+    }
+
+    private void saveDB(){
+        Workbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet();
+
+        Row row = sheet.createRow(0);
+        Cell cell;
+
+        cell = row.createCell(0);
+        cell.setCellValue("한글");
+
+        cell = row.createCell(1);
+        cell.setCellValue("English");
+
+        cell = row.createCell(2);
+        cell.setCellValue("123");
+
+        File xlsFile = new File(getExternalFilesDir(null), "text.xls");
+        try{
+            FileOutputStream os = new FileOutputStream(xlsFile);
+            workbook.write(os);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+
+        Toast.makeText(getApplicationContext(), xlsFile.getAbsolutePath()+ "에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+        // for(int i=0; i)
+        // DB (0,0 부터 끝까지)
+        // for(int i=0; i<)
     }
 }

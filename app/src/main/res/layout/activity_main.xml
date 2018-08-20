@@ -19,6 +19,17 @@
         tools:layout_editor_absoluteY="230dp" />
 
     <Button
+        android:id="@+id/btn_SaveDB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/btn_changeColumn"
+        android:onClick="detectClick"
+        android:text="SaveData"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="230dp" />
+
+    <Button
         android:id="@+id/btn_generateQR"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
