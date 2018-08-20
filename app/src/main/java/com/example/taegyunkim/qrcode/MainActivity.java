@@ -1,6 +1,5 @@
 package com.example.taegyunkim.qrcode;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +22,7 @@ import com.example.taegyunkim.qrcode.SQLite.DBHelper;
 import com.facebook.stetho.Stetho;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
@@ -47,8 +47,7 @@ import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
     private DBHelper helper;
     String dbName = "IngrediDBfile.db";
     //public SQLiteDatabase db;
@@ -59,21 +58,20 @@ public class MainActivity extends AppCompatActivity
     String temp;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Stetho.initializeWithDefaults(this);
 
-        btnGenerateClick = (Button)findViewById(R.id.btn_generateQR);
-        btnGenerateClick.setOnClickListener(new View.OnClickListener(){
+        btnGenerateClick = (Button) findViewById(R.id.btn_generateQR);
+        btnGenerateClick.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), GenerateQRcode.class);
                 startActivity(intent); // GenerateQRcode 로 이동
             }
         });
-        btnChangeColumns = (Button)findViewById(R.id.btn_changeColumn);
+        btnChangeColumns = (Button) findViewById(R.id.btn_changeColumn);
         btnChangeColumns.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,24 +81,23 @@ public class MainActivity extends AppCompatActivity
         });
 
         // sharedPreference로 array[0]부터 저장할것
-        String[] column={"회화로_좌","회화로_좌_explain","회화로_우","회화로_우_explain","회화로_킬달용","회화로_킬달용_explain","Hotplate_회화로옆","Hotplate_회화로옆_explain","Hotplate_제당좌","Hotplate_제당좌_explain","Hotplate_제당우","Hotplate_제당우_explain","Hotplate_전분6구","Hotplate_전분6구_explain","Water_bath_청신","Water_bath_청신_explain","Water_bath_Advantec","Water_bath_Advantec_explain","Water_bath_가공전분","Water_bath_가공전분_explain","AAS","AAS_explain","Auto_Clave","Auto_Clave_explain","인화성물질보관","인화성물질보관_explain"};
+        String[] column = {"회화로_좌", "회화로_좌_explain", "회화로_우", "회화로_우_explain", "회화로_킬달용", "회화로_킬달용_explain", "Hotplate_회화로옆", "Hotplate_회화로옆_explain", "Hotplate_제당좌", "Hotplate_제당좌_explain", "Hotplate_제당우", "Hotplate_제당우_explain", "Hotplate_전분6구", "Hotplate_전분6구_explain", "Water_bath_청신", "Water_bath_청신_explain", "Water_bath_Advantec", "Water_bath_Advantec_explain", "Water_bath_가공전분", "Water_bath_가공전분_explain", "AAS", "AAS_explain", "Auto_Clave", "Auto_Clave_explain", "인화성물질보관", "인화성물질보관_explain"};
         saveArray(column, "columnName", getApplicationContext());
 
-        helper = new DBHelper(this, dbName,null,1);
+        helper = new DBHelper(this, dbName, null, 1);
         //helper.insert();
         saveDB();
     }
 
 
-    public void detectClick(View v){
+    public void detectClick(View v) {
 
         helper.select(Singleton.getInstance().getDate()); // PRIMARY KEY Exist check
 
         // Singleton Datecheck 'True'일 시 그냥 QRcode Recorder 실행
-        if(Singleton.getInstance().getDateCheck()) {
+        if (Singleton.getInstance().getDateCheck()) {
             new IntentIntegrator(this).initiateScan();
-        }
-        else{
+        } else {
             helper.insert();
             new IntentIntegrator(this).initiateScan();
         }
@@ -110,24 +107,24 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == IntentIntegrator.REQUEST_CODE) {
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-            if (result != null && resultCode == RESULT_OK){
-                try{
+            if (result != null && resultCode == RESULT_OK) {
+                try {
                     temp = result.getContents();
-                    temp = URLDecoder.decode(temp,"UTF-8");
-                }catch (UnsupportedEncodingException e){
+                    temp = URLDecoder.decode(temp, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
                 Toast.makeText(this, "Scanned: " + temp, Toast.LENGTH_LONG).show();
 
-                btnGenerateClick.setOnClickListener(new View.OnClickListener(){
+                btnGenerateClick.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v){
+                    public void onClick(View v) {
                         Intent intent = new Intent(v.getContext(), GenerateQRcode.class);
                         startActivity(intent); // GenerateQRcode 로 이동
                     }
                 });
                 classifyString = new Intent(getApplicationContext(), ClassifyMachine.class);
-                classifyString.putExtra("result",temp);
+                classifyString.putExtra("result", temp);
                 startActivity(classifyString);
             } else {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
@@ -141,13 +138,13 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences prefs = mContext.getSharedPreferences("columnName", 0);
         SharedPreferences.Editor editor = prefs.edit();
 
-        editor.putInt(arrayName +"_size", array.length);
-        for(int i=0;i<array.length;i++)
+        editor.putInt(arrayName + "_size", array.length);
+        for (int i = 0; i < array.length; i++)
             editor.putString(arrayName + "_" + i, array[i]);
         return editor.commit();
     }
 
-    private void saveDB(){
+    private void saveDB() {
         Workbook workbook = new HSSFWorkbook();
         Sheet sheet = workbook.createSheet();
 
@@ -164,15 +161,15 @@ public class MainActivity extends AppCompatActivity
         cell.setCellValue("123");
 
         File xlsFile = new File(getExternalFilesDir(null), "text.xls");
-        try{
+        try {
             FileOutputStream os = new FileOutputStream(xlsFile);
             workbook.write(os);
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
 
-        Toast.makeText(getApplicationContext(), xlsFile.getAbsolutePath()+ "에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), xlsFile.getAbsolutePath() + "에 저장되었습니다.", Toast.LENGTH_SHORT).show();
         // for(int i=0; i)
         // DB (0,0 부터 끝까지)
         // for(int i=0; i<)
