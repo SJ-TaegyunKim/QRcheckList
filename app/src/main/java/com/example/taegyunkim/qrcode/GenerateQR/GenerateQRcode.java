@@ -139,7 +139,8 @@ public class GenerateQRcode extends AppCompatActivity {
         return bmp;
     }
 
-    // 권한 Override
+
+    // TODO 리퀘스트 받아오는 부분을 앱 시작할 때 한번만 받아오도록 하면 좋을 것 같다. (Main 에서 처리할 것)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

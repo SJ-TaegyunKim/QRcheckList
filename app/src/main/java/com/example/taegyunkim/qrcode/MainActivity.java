@@ -1,11 +1,14 @@
 package com.example.taegyunkim.qrcode;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +36,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -47,6 +51,8 @@ import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.example.taegyunkim.qrcode.GenerateQR.GenerateQRcode.WRITE_STORAGE;
+
 public class MainActivity extends AppCompatActivity {
     private DBHelper helper;
     String dbName = "IngrediDBfile.db";
@@ -55,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     Intent classifyString;
     Button btnGenerateClick;
     Button btnChangeColumns;
+    // 버튼 리스너 연결 ( 권한 받기)
+    Button btnSaveData;
     String temp;
 
     @Override
@@ -79,6 +87,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        btnSaveData = (Button) findViewById(R.id.btn_SaveData);
+        btnSaveData.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                // TODO: 2018. 8. 27. 권한설정 다시 설정할 것. WRITE_EXTERNAL_STORAGE 권한 못받아옴.
+                // TODO: 지금은 Image저장할 때 한번 받아오면 가능한 형식으로 저장.
+                saveDB();
+            }
+        });
 
         // sharedPreference로 array[0]부터 저장할것
         String[] column = {"회화로_좌", "회화로_좌_explain", "회화로_우", "회화로_우_explain", "회화로_킬달용", "회화로_킬달용_explain", "Hotplate_회화로옆", "Hotplate_회화로옆_explain", "Hotplate_제당좌", "Hotplate_제당좌_explain", "Hotplate_제당우", "Hotplate_제당우_explain", "Hotplate_전분6구", "Hotplate_전분6구_explain", "Water_bath_청신", "Water_bath_청신_explain", "Water_bath_Advantec", "Water_bath_Advantec_explain", "Water_bath_가공전분", "Water_bath_가공전분_explain", "AAS", "AAS_explain", "Auto_Clave", "Auto_Clave_explain", "인화성물질보관", "인화성물질보관_explain"};
@@ -86,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
         helper = new DBHelper(this, dbName, null, 1);
         //helper.insert();
-        saveDB();
     }
 
 
@@ -151,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
         Row row = sheet.createRow(0);
         Cell cell;
 
+
+        // TODO 여기는 Cell 가져오는거 다시 지정할 것.
         cell = row.createCell(0);
         cell.setCellValue("한글");
 
@@ -160,6 +178,24 @@ public class MainActivity extends AppCompatActivity {
         cell = row.createCell(2);
         cell.setCellValue("123");
 
+        String state = Environment.getExternalStorageState();
+        if(Environment.MEDIA_MOUNTED.equals(state)||
+            Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)){
+            File file = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS), "Ingredian.xls");
+            try {
+                FileOutputStream os = new FileOutputStream(file);
+                workbook.write(os);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            Log.e("확인불가능","확인불가능");
+        }
+
+/*
+
         File xlsFile = new File(getExternalFilesDir(null), "text.xls");
         try {
             FileOutputStream os = new FileOutputStream(xlsFile);
@@ -167,11 +203,32 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+*/
 
 
-        Toast.makeText(getApplicationContext(), xlsFile.getAbsolutePath() + "에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), xlsFile.getAbsolutePath() + "에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+
         // for(int i=0; i)
         // DB (0,0 부터 끝까지)
         // for(int i=0; i<)
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case WRITE_STORAGE:
+                for (int i = 0; i < permissions.length; i++) {
+                    String permission = permissions[i];
+                    int grantResult = grantResults[i];
+                    if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                            Log.e("Permission","Permission");
+                        } else {
+                            Log.e("Permission error","Permission error");
+                        }
+                    }
+                }
+                break;
+        }
     }
 }
