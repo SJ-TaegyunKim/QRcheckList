@@ -11,7 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#dddddd">
 
         <Button
             android:id="@+id/btn_detectQR"
@@ -21,7 +22,12 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_shape"
+            android:drawableTop="@drawable/scan"
+            android:fontFamily="@font/nanumsbold"
             android:onClick="detectClick"
+            android:textSize="15dp"
             android:text="QR 코드 점검 시작" />
 
         <Button
@@ -30,7 +36,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/nanumsbold"
+            android:background="@drawable/button_shape"
             android:layout_weight="1"
+            android:textSize="15dp"
             android:text="점검 항목 추가" />
         <Button
             android:id="@+id/btn_changeColumn"
@@ -38,6 +48,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="15dp"
+            android:fontFamily="@font/nanumsbold"
+            android:background="@drawable/button_shape"
             android:layout_weight="1"
             android:text="점검 항목 수정"
             android:layout_below="@+id/btn_generateQR" />
@@ -51,6 +65,9 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:onClick="detectClick"
+            android:fontFamily="@font/nanumsbold"
+            android:background="@drawable/button_shape"
+            android:textSize="15dp"
             android:text="점검 내역 저장" />
 
 
