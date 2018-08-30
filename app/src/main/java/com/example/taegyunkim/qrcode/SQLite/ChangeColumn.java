@@ -1,6 +1,8 @@
 package com.example.taegyunkim.qrcode.SQLite;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,8 +51,27 @@ public class ChangeColumn extends AppCompatActivity {
             currentColumnName = spinner.getSelectedItem().toString();
 
             dbHelper.alter(currentColumnName, newColumnName);
+            showDialog();
         }
     };
+
+    public void showDialog()
+    {
+        if (!ChangeColumn.this.isFinishing())
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(ChangeColumn.this);
+            builder.setMessage("검사 항목 수정이 완료되었습니다.");
+            builder.setPositiveButton("확인",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+            builder.show();
+        }
+    }
 
     // Device File Explorer -> data/data/com.example.taegyunkim.qrcode/databases/IngrediDBfile.db
     // 오른 클릭 -> Save as -> 바탕화면

@@ -1,8 +1,12 @@
 package com.example.taegyunkim.qrcode.Etc;
 
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 // 싱글톤 패턴
 public class Singleton {
@@ -11,6 +15,7 @@ public class Singleton {
     private boolean checkFail;
     private boolean dateCheck;
     private String date;
+    private ArrayList<String> columnNameList = new ArrayList<String>();
 
     public static Singleton getInstance() {
         if (instance == null) {
@@ -37,6 +42,21 @@ public class Singleton {
     public void setDateCheck(boolean dateCheck) { this.dateCheck = dateCheck; }
 
     public String getDate(){ return this.date; }
+
+    public void setColumnNameList(ArrayList<String> columnNameList)
+    {
+        this.columnNameList.clear();
+
+        for(int i=0; i<columnNameList.size(); i++)
+        {
+            this.columnNameList.add(columnNameList.get(i));
+        }
+    }
+
+    public ArrayList<String> getColumnNameList()
+    {
+        return this.columnNameList;
+    }
 
     public void setDate(String date){
         Date dateTemp = new Date();
