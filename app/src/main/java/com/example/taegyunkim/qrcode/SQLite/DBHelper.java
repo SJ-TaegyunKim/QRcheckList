@@ -1,19 +1,26 @@
 package com.example.taegyunkim.qrcode.SQLite;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.example.taegyunkim.qrcode.Etc.Singleton;
+import java.util.Map;
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class DBHelper extends SQLiteOpenHelper
 {
     private String tag = "TEST";
+    private Context mContext;
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name , factory, version);
+        mContext = context;
     }
 
     // DB를 새로 생성할 때 호출되는 함수
@@ -25,7 +32,8 @@ public class DBHelper extends SQLiteOpenHelper
         // date 만들어주기
         String date = Singleton.getInstance().getDate();
 
-        db.execSQL("CREATE TABLE if not exists Ingredion (date text primary key, 회화로_좌 text,회화로_좌_explain text,회화로_우 text,회화로_우_explain text,회화로_킬달용 text,회화로_킬달용_explain text,Hotplate_회화로옆 text,Hotplate_회화로옆_explain text,Hotplate_제당좌 text,Hotplate_제당좌_explain text,Hotplate_제당우 text,Hotplate_제당우_explain text,Hotplate_전분6구 text,Hotplate_전분6구_explain text,Water_bath_청신 text,Water_bath_청신_explain text,Water_bath_Advantec text,Water_bath_Advantec_explain text,Water_bath_가공전분 text,Water_bath_가공전분_explain text,AAS text,AAS_explain text,Auto_Clave text,Auto_Clave_explain text,인화성물질보관 text,인화성물질보관_explain text, 점검자 text)"); // 이름 바꿀것
+        db.execSQL("CREATE TABLE if not exists Ingredion (date text primary key, Auto_Clave text,Auto_Clave_explain text,AAS text,AAS_explain text,Water_bath_가공전분_explain text,Water_bath_Advantec_explain text,Water_bath_가공전분 text,Water_bath_청신_explain text,Water_bath_Advantec text,Hotplate_전분6구_explain text,Water_bath_청신 text,Hotplate_제당우_explain text,Hotplate_전분6구 text,회화로_좌 text,회화로_좌_explain text,Hotplate_제당우 text,회화로_우 text,회화로_우_explain text,회화로_킬달용 text,회화로_킬달용_explain text,Hotplate_회화로옆 text,Hotplate_회화로옆_explain text,Hotplate_제당좌 text,Hotplate_제당좌_explain text,인화성물질보관 text,인화성물질보관_explain text, 점검자 text)");
+
         Log.d(tag,"onCreate");
     }
 
@@ -94,15 +102,85 @@ public class DBHelper extends SQLiteOpenHelper
         db.close();
     }
 
-    public void alter(String oldColumn, String newColumn) {
+    public void alter(String oldColumn, String newColumn)
+    {
+        SharedPreferences prefs = mContext.getSharedPreferences("columnName", 0);
+        SharedPreferences.Editor editor = prefs.edit();
         SQLiteDatabase db = getWritableDatabase();
-        // 입력한 항목과 일치하는 행 삭제
+        String createSql = "CREATE TABLE if not exists Ingredion (date text primary key, ";
+        String copySql = "INSERT INTO Ingredion(";
 
         db.execSQL("ALTER TABLE Ingredion RENAME TO Ingredion2");
-        db.execSQL("CREATE TABLE Ingredion (date text primary key, 회화로_좌 text,회화로_좌_explain text,회화로_우 text,회화로_우_explain text,회화로_킬달용 text,회화로_킬달용_explain text,Hotplate_회화로옆 text,Hotplate_회화로옆_explain text,Hotplate_제당좌 text,Hotplate_제당좌_explain text,Hotplate_제당우 text,Hotplate_제당우_explain text,Hotplate_전분6구 text,Hotplate_전분6구_explain text,Water_bath_청신 text,Water_bath_청신_explain text,Water_bath_Advantec text,Water_bath_Advantec_explain text,Water_bath_가공전분 text,Water_bath_가공전분_explain text,AAS text,AAS_explain text,Auto_Clave text,Auto_Clave_explain text,인화성물질보관 text,인화성물질보관_explain text, 점검자 text)");
 
-        //db.execSQL("ALTER TABLE Ingredion RENAME COLUMN '"+oldColumn+"' TO '"+newColumn + "");
-        //db.execSQL("ALTER TABLE Ingredion ADD COLUMN "+newColumn);
+        for(int i=0; i<Singleton.getInstance().getColumnNameList().size(); i++)
+        {
+            if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==true)
+            {
+                createSql += newColumn + " text,";
+            }
+            else
+            {
+                createSql += Singleton.getInstance().getColumnNameList().get(i).toString() + " text,";
+            }
+        }
+        createSql += " 점검자 text)";
+        db.execSQL(createSql);
+
+        for(int i=0; i<Singleton.getInstance().getColumnNameList().size(); i++)
+        {
+            if(i==Singleton.getInstance().getColumnNameList().size()-1)
+            {
+                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false)
+                {
+                    copySql += Singleton.getInstance().getColumnNameList().get(i).toString() + ") ";
+                }
+            }
+            else
+            {
+                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false)
+                {
+                    copySql += Singleton.getInstance().getColumnNameList().get(i).toString() + ", ";
+                }
+            }
+        }
+        copySql += " SELECT ";
+
+        for(int i=0; i<Singleton.getInstance().getColumnNameList().size(); i++)
+        {
+            if(i==Singleton.getInstance().getColumnNameList().size()-1)
+            {
+                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false)
+                {
+                    copySql += Singleton.getInstance().getColumnNameList().get(i).toString() + " FROM Ingredion2";
+                }
+            }
+            else
+            {
+                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false)
+                {
+                    copySql += Singleton.getInstance().getColumnNameList().get(i).toString() + ", ";
+                }
+            }
+        }
+
+        db.execSQL(copySql);
+        db.execSQL("DROP TABLE Ingredion2");
+        editor.putString(findKey(oldColumn),newColumn);
+        editor.apply();
         db.close();
+    }
+
+    String findKey(String value)
+    {
+        SharedPreferences prefs = mContext.getSharedPreferences("columnName", 0);
+        Map<String,?> keys = prefs.getAll();
+
+        for(Map.Entry<String,?> entry : keys.entrySet()){
+            if(value.equals(entry.getValue().toString()))
+            {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

@@ -40,7 +40,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -83,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
         btnChangeColumns.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ChangeColumn.class);
+                getColumnList();
+                Intent intent = new Intent(MainActivity.this, ChangeColumn.class);
                 startActivity(intent);
             }
         });
@@ -150,14 +154,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean saveArray(String[] array, String arrayName, Context mContext) {
+    public void saveArray(String[] array, String arrayName, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("columnName", 0);
         SharedPreferences.Editor editor = prefs.edit();
 
-        editor.putInt(arrayName + "_size", array.length);
-        for (int i = 0; i < array.length; i++)
-            editor.putString(arrayName + "_" + i, array[i]);
-        return editor.commit();
+        if(!prefs.contains("columnName_size"))
+        {
+            editor.putInt(arrayName + "_size", array.length);
+            for (int i = 0; i < array.length; i++)
+                editor.putString(arrayName + "_" + i, array[i]);
+
+            editor.commit();
+        }
+    }
+
+    public void getColumnList()
+    {
+        ArrayList<String> columnNameList = new ArrayList<String>();
+        String tempColumnName = "";
+
+        //키값없이 모든 저장값 가져오기
+        SharedPreferences prefb =getSharedPreferences("columnName", MODE_PRIVATE);
+        Collection<?> col =  prefb.getAll().values();
+        Iterator<?> it = col.iterator();
+
+        while(it.hasNext())
+        {
+            tempColumnName = it.next().toString();
+
+            if(tempColumnName.equals("26")==false)
+            {
+                columnNameList.add(tempColumnName);
+            }
+        }
+        Singleton.getInstance().setColumnNameList(columnNameList);
     }
 
     private void saveDB() {
