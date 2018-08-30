@@ -8,42 +8,51 @@
     android:orientation="vertical"
     tools:context="com.example.taegyunkim.qrcode.MainActivity">
 
-    <Button
-        android:id="@+id/btn_detectQR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:onClick="detectClick"
-        android:text="Detect QR Code"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="230dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btn_SaveData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/btn_changeColumn"
-        android:onClick="detectClick"
-        android:text="SaveData"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="230dp" />
+        <Button
+            android:id="@+id/btn_detectQR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:onClick="detectClick"
+            android:text="QR 코드 점검 시작" />
 
-    <Button
-        android:id="@+id/btn_generateQR"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="+"
-        tools:layout_editor_absoluteX="40dp"
-        tools:layout_editor_absoluteY="40dp" />
-    <Button
-        android:id="@+id/btn_changeColumn"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="Column"
-        android:layout_below="@+id/btn_generateQR"
-        tools:layout_editor_absoluteX="40dp"
-        tools:layout_editor_absoluteY="40dp" />
+        <Button
+            android:id="@+id/btn_generateQR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:text="점검 항목 추가" />
+        <Button
+            android:id="@+id/btn_changeColumn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:text="점검 항목 수정"
+            android:layout_below="@+id/btn_generateQR" />
+
+        <Button
+            android:id="@+id/btn_SaveData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:onClick="detectClick"
+            android:text="점검 내역 저장" />
+
+
+    </LinearLayout>
 </RelativeLayout>

@@ -60,7 +60,7 @@ public class ChangeColumn extends AppCompatActivity {
         if (!ChangeColumn.this.isFinishing())
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(ChangeColumn.this);
-            builder.setMessage("검사 항목 수정이 완료되었습니다.");
+            builder.setMessage("점검 항목 수정이 완료되었습니다.");
             builder.setPositiveButton("확인",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which)
