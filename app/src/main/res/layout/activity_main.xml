@@ -41,7 +41,7 @@
             android:background="@drawable/button_shape"
             android:layout_weight="1"
             android:textSize="15dp"
-            android:text="점검 항목 추가" />
+            android:text="QR 코드 생성" />
         <Button
             android:id="@+id/btn_changeColumn"
             android:layout_width="match_parent"

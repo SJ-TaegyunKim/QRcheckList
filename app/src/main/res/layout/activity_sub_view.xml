@@ -16,7 +16,8 @@
             android:id="@+id/checkFailExplain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="불합격 이유를 적어주세요."
+            android:hint="불합격 사유를 작성해주세요."
+            android:fontFamily="@font/nanumsbold"
             android:textSize="20dp"/>
     </LinearLayout>
 </LinearLayout>
