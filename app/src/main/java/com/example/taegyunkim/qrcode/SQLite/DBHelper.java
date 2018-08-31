@@ -42,6 +42,11 @@ public class DBHelper extends SQLiteOpenHelper
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
+    public void delete(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("Delete FROM "+"Ingredion");
+    }
+
     public void insert() {
         // 읽고 쓰기가 가능하게 DB 열기
         SQLiteDatabase db = getWritableDatabase();

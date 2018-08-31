@@ -105,8 +105,11 @@ public class MainActivity extends AppCompatActivity {
         String[] column = {"회화로_좌", "회화로_좌_explain", "회화로_우", "회화로_우_explain", "회화로_킬달용", "회화로_킬달용_explain", "Hotplate_회화로옆", "Hotplate_회화로옆_explain", "Hotplate_제당좌", "Hotplate_제당좌_explain", "Hotplate_제당우", "Hotplate_제당우_explain", "Hotplate_전분6구", "Hotplate_전분6구_explain", "Water_bath_청신", "Water_bath_청신_explain", "Water_bath_Advantec", "Water_bath_Advantec_explain", "Water_bath_가공전분", "Water_bath_가공전분_explain", "AAS", "AAS_explain", "Auto_Clave", "Auto_Clave_explain", "인화성물질보관", "인화성물질보관_explain"};
         saveArray(column, "columnName", getApplicationContext());
 
+
         helper = new DBHelper(this, dbName, null, 1);
         //helper.insert();
+
+        helper.delete();
     }
 
 
@@ -127,6 +130,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == IntentIntegrator.REQUEST_CODE) {
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
+            //TODO temp 에 QR코드 입력된거 String 으로 저장
+            //TODO temp가 SharedPreference에 있는지 없는지만 확인해서 boolean으로 받은다음에
+            //TODO 바로밑에 if문에 조건 추가하면 될듯.
+            temp = result.getContents();
+
             if (result != null && resultCode == RESULT_OK) {
                 try {
                     temp = result.getContents();
@@ -136,17 +145,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Toast.makeText(this, "Scanned: " + temp, Toast.LENGTH_LONG).show();
 
-                btnGenerateClick.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), GenerateQRcode.class);
-                        startActivity(intent); // GenerateQRcode 로 이동
-                    }
-                });
                 classifyString = new Intent(getApplicationContext(), ClassifyMachine.class);
                 classifyString.putExtra("result", temp);
                 startActivity(classifyString);
             } else {
+                //TODO Alert메시지 여기서 띄우면 될듯.
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             }
         } else {
