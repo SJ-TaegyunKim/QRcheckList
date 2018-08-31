@@ -4,17 +4,24 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.taegyunkim.qrcode.R;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ChangeColumn extends AppCompatActivity {
     public Context context;
@@ -34,9 +41,44 @@ public class ChangeColumn extends AppCompatActivity {
 
         context = getApplicationContext();
         String[] columnInfo = loadArray("columnName",context);
+        ArrayList<String> columnList = new ArrayList<String>(Arrays.asList(columnInfo));
+        columnList.add(0,"수정을 원하시는 점검 항목을 선택해주세요.");
+
         spinner = (Spinner)findViewById(R.id.spinnerinChangeColumn);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, R.layout.custom_simple_dropdown_item_1line,columnInfo);
+                this, R.layout.custom_simple_dropdown_item_1line,columnList)
+        {
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
+        adapter.setDropDownViewResource(R.layout.custom_simple_dropdown_item_1line);
         spinner.setAdapter(adapter);
         spinner.setSelection(0);
     }

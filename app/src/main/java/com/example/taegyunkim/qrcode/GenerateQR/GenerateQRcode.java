@@ -14,15 +14,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.Snackbar;
 
 import com.example.taegyunkim.qrcode.R;
+import com.example.taegyunkim.qrcode.SQLite.ChangeColumn;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -35,14 +40,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 // QR코드 생성을 위한 클래스
 public class GenerateQRcode extends AppCompatActivity {
     ImageView imageView;
     Bitmap bitmap;
-    EditText edit;
+    Button qrSaveButton;
+    private Spinner spinner;
     String content; // 입력 된 문자열 읽기 위한 변수
+    ChangeColumn changeColumn = new ChangeColumn();
 
     public static final int WRITE_STORAGE = 1;
 
@@ -59,15 +68,56 @@ public class GenerateQRcode extends AppCompatActivity {
             }
         }
 
-        RelativeLayout rl = (RelativeLayout)findViewById(R.id.relativeLayOut);
         imageView = (ImageView) findViewById(R.id.iv_generated_qrcode);
-        edit = (EditText)findViewById(R.id.edit_QRtext);
+        qrSaveButton = (Button)findViewById(R.id.btn_saveQR);
+        qrSaveButton.setVisibility(View.INVISIBLE);
+        spinner = (Spinner)findViewById(R.id.spinnerinChangeColumn);
+
+        String[] columnInfo = changeColumn.loadArray("columnName",getApplicationContext());
+        ArrayList<String> columnList = new ArrayList<String>(Arrays.asList(columnInfo));
+        columnList.add(0,"생성을 원하는 점검 항목을 선택해주세요.");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, R.layout.custom_simple_dropdown_item_1line,columnList)
+        {
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
+        adapter.setDropDownViewResource(R.layout.custom_simple_dropdown_item_1line);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(0);
 
 
         findViewById(R.id.btn_generatorQR).setOnClickListener(new View.OnClickListener() { // generate 버튼 클릭 시
             @Override
             public void onClick(View v) {
-                content = ((EditText) findViewById(R.id.edit_QRtext)).getText().toString();
+                content = spinner.getSelectedItem().toString();
                 // UTF-8 변환
                 try {
                     content = URLEncoder.encode(content, "UTF-8");
@@ -75,25 +125,11 @@ public class GenerateQRcode extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (content.isEmpty()) {
-                    Toast.makeText(GenerateQRcode.this, "문자를 입력해주세요", Toast.LENGTH_LONG).show();
+                    Toast.makeText(GenerateQRcode.this, "점검 항목을 선택해주세요.", Toast.LENGTH_LONG).show();
                 } else {
                     generateQRcode(content);
                 }
-
-                // Generate 하면 자판 내려가게끔 설정
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(edit.getWindowToken(),0);
-
-            }
-        });
-        rl.setOnClickListener(new View.OnClickListener() { // 레이아웃 클릭 시 자판 내려가기
-            @Override
-            public void onClick(View view) {
-                //TODO Auto-generated method stub
-
-                // 화면 어디서든 클릭하면 자판 내려가게 설정
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(edit.getWindowToken(),0);
+                qrSaveButton.setVisibility(View.VISIBLE);
             }
         });
 

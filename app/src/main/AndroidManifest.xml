@@ -12,17 +12,23 @@
         android:roundIcon="@mipmap/ingredion_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".SplashActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity">
+        </activity>
         <activity android:name=".GenerateQR.GenerateQRcode" />
         <activity android:name=".DetectQR.ClassifyMachine" />
         <activity android:name=".Etc.SubView" />
-        <activity android:name=".SQLite.ChangeColumn"></activity>
+        <activity android:name=".SQLite.ChangeColumn" />
     </application>
 
 </manifest>
