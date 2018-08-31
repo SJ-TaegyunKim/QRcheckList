@@ -47,11 +47,11 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put("date",Singleton.getInstance().getDate());
+        values.put("date", Singleton.getInstance().getDate());
         db.insert("Ingredion",null, values);
-        //db.execSQL("INSERT INTO Ingredion VALUES (date,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)");
         db.close();
     }
+
 
     public void update(String column, String value, boolean checkValue) {
         SQLiteDatabase db = getWritableDatabase();
@@ -91,15 +91,9 @@ public class DBHelper extends SQLiteOpenHelper
         }
     }
 
-    // addAlter 시 컬럼이 존재하는지 먼저 파악할 것
-    public void addAlter(String item){
-        SQLiteDatabase db = getWritableDatabase();
-        // 입력한 항목과 일치하는 행 삭제
-
-        // Alter Error
-        db.execSQL("ALTER TABLE Ingredion ADD "+item+" TEXT");
-        Log.d(tag,"addAlter");
-        db.close();
+    public void delete(){
+        SQLiteDatabase db = getReadableDatabase();
+        db.execSQL("delete from "+ "Ingredion");
     }
 
     public void alter(String oldColumn, String newColumn)

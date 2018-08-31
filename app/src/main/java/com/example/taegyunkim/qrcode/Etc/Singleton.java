@@ -58,7 +58,7 @@ public class Singleton {
         return this.columnNameList;
     }
 
-    public void setDate(String date){
+    public void setDate(){
         Date dateTemp = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String getDate = sdf.format(dateTemp);

@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Environment;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,7 @@ import android.util.Log;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -106,13 +108,27 @@ public class MainActivity extends AppCompatActivity {
         saveArray(column, "columnName", getApplicationContext());
 
         helper = new DBHelper(this, dbName, null, 1);
-        //helper.insert();
+
+        String getTempDate = checkTodayDate();
+        helper.select(getTempDate);
+
+        if(!Singleton.getInstance().getDateCheck()){
+            Singleton.getInstance().setDate();
+            helper.insert();
+        }
     }
 
+    public String checkTodayDate(){
+        Date dateTemp = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String getDate = sdf.format(dateTemp);
+
+        return getDate;
+    }
 
     public void detectClick(View v) {
-
-        helper.select(Singleton.getInstance().getDate()); // PRIMARY KEY Exist check
+        String getDate = checkTodayDate();
+        helper.select(getDate); // PRIMARY KEY Exist check
 
         // Singleton Datecheck 'True'일 시 그냥 QRcode Recorder 실행
         if (Singleton.getInstance().getDateCheck()) {
@@ -197,8 +213,23 @@ public class MainActivity extends AppCompatActivity {
         Row row = sheet.createRow(0);
         Cell cell;
 
+        //TODO 여기는 Cell 가져오는거 다시 지정할 것.
+        //TODO 셀 전부 저장
 
-        // TODO 여기는 Cell 가져오는거 다시 지정할 것.
+        // while로 끝까지는 검색
+        // 그안에 for문으로 26번째때 나와서 한줄 띄우기
+        cell = row.createCell(0);
+        cell.setCellValue("한글");
+
+        cell = row.createCell(1);
+        cell.setCellValue("English");
+
+        cell = row.createCell(2);
+        cell.setCellValue("123");
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setWrapText(true);
+
         cell = row.createCell(0);
         cell.setCellValue("한글");
 
@@ -216,6 +247,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 FileOutputStream os = new FileOutputStream(file);
                 workbook.write(os);
+
+                Snackbar.make(getCurrentFocus(), "갤러리에 이미지가 저장되었습니다.", Snackbar.LENGTH_LONG).show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -223,25 +256,8 @@ public class MainActivity extends AppCompatActivity {
         else{
             Log.e("확인불가능","확인불가능");
         }
-
-/*
-
-        File xlsFile = new File(getExternalFilesDir(null), "text.xls");
-        try {
-            FileOutputStream os = new FileOutputStream(xlsFile);
-            workbook.write(os);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-*/
-
-
-        //Toast.makeText(getApplicationContext(), xlsFile.getAbsolutePath() + "에 저장되었습니다.", Toast.LENGTH_SHORT).show();
-
-        // for(int i=0; i)
-        // DB (0,0 부터 끝까지)
-        // for(int i=0; i<)
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

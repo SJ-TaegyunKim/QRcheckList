@@ -100,5 +100,4 @@ public class ClassifyMachine extends AppCompatActivity {
     // 1. checkbox 에 항목들 컬럼으로 채울 것.(안되면 싱글톤에 넣고 다른 액티비티에서 띄울 것)
     // 2. 바꿀 컬럼 명 입력 받기.
     // 3. 점검자 명 바꿀 수 있는 항목 1,2 참고해서 만들 것
-
 }
