@@ -9,7 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.example.taegyunkim.qrcode.Etc.Singleton;
+
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Vector;
+
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -57,18 +61,19 @@ public class DBHelper extends SQLiteOpenHelper
         db.close();
     }
 
-    public void select(){
+    public ArrayList<String> select(){
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.query("Ingredion",null,null,null,null,null,null);
+        Cursor c = db.rawQuery("SELECT * FROM Ingredion",null);
+        ArrayList<String> indexValue = new ArrayList<>();
+
+        int whileCount = 0;
 
         while(c.moveToNext()){
-            String date = c.getString(c.getColumnIndex("date"));
-            Log.e("TG Date", date);
-            String checkPerson = c.getString(c.getColumnIndex("점검자"));
-            Log.e("TG Date", checkPerson);
-            String a1 = c.getString(c.getColumnIndex("회화로좌"));
-            Log.e("TG Date", a1);
+            indexValue.add(c.getString(whileCount));
+            whileCount++;
         }
+
+        return indexValue;
     }
 
     public String[] selectColumn(){

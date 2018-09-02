@@ -38,6 +38,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.functions.Value;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         helper = new DBHelper(this, dbName, null, 1);
+        helper.delete();
 
         String getTempDate = checkTodayDate();
         helper.select(getTempDate);
@@ -124,9 +126,6 @@ public class MainActivity extends AppCompatActivity {
             Singleton.getInstance().setDate();
             helper.insert();
         }
-        //helper.insert();
-
-        helper.delete();
     }
 
     public String checkTodayDate(){
@@ -243,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
 
         Workbook workbook = new HSSFWorkbook();
         Sheet sheet = workbook.createSheet("Ingredian");
+        //CellStyle cellStyle = workbook.createCellStyle();
+
 
         Row row;
         Cell cell;
@@ -256,16 +257,40 @@ public class MainActivity extends AppCompatActivity {
         // 분류 항목들 작성
         for(int i=0; i<columnNames.length; i++){
             cell = row.createCell(countCell);
+            //cellStyle.setAlignment(HorizontalAlignment.CENTER);
             cell.setCellValue(columnNames[i]);
+            //cell.setCellStyle(cellStyle);
             countCell++;
         }
-        countRow = 0;
-        countCell = 0;
+        countRow++;
 
 
         //TODO 셀들 다 가져오기
-        helper.select();
+        ArrayList<String> columns = helper.select();
 
+        Log.e("row", String.valueOf(countRow));
+
+        row = sheet.createRow(countRow);
+        countCell = 0;
+
+        if(columnNames.length > columns.size()){
+            for(int i=0; i<columns.size(); i++){
+                cell = row.createCell(countCell);
+                cell.setCellValue(columns.get(i));
+                countCell++;
+            }
+        }else{
+            for(int i=0; i<columns.size() / columnNames.length; i++){
+                countCell = 0;
+                for(int j=0; j<columns.size(); j++){
+                    cell = row.createCell(countCell);
+                    cell.setCellValue(columns.get(j));
+                    countCell++;
+                }
+            }
+            countRow++;
+            row = sheet.createRow(countRow);
+        }
 
         String state = Environment.getExternalStorageState();
         if(Environment.MEDIA_MOUNTED.equals(state)||
