@@ -9,11 +9,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Environment;
+import android.renderscript.Sampler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.taegyunkim.qrcode.Etc.Singleton;
@@ -31,6 +34,7 @@ import android.os.Build;
 import android.util.Log;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.formula.functions.Value;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -110,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
         //helper.insert();
 
         helper.delete();
+
+        boolean a = checkColumn("돼지");
     }
 
 
@@ -131,12 +137,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == IntentIntegrator.REQUEST_CODE) {
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
-            //TODO temp 에 QR코드 입력된거 String 으로 저장
-            //TODO temp가 SharedPreference에 있는지 없는지만 확인해서 boolean으로 받은다음에
-            //TODO 바로밑에 if문에 조건 추가하면 될듯.
             temp = result.getContents();
+            boolean checkColumnValue = checkColumn(temp);
 
-            if (result != null && resultCode == RESULT_OK) {
+            if (result != null && resultCode == RESULT_OK && checkColumnValue) {
                 try {
                     temp = result.getContents();
                     temp = URLDecoder.decode(temp, "UTF-8");
@@ -148,9 +152,13 @@ public class MainActivity extends AppCompatActivity {
                 classifyString = new Intent(getApplicationContext(), ClassifyMachine.class);
                 classifyString.putExtra("result", temp);
                 startActivity(classifyString);
-            } else {
-                //TODO Alert메시지 여기서 띄우면 될듯.
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            }
+            else if(result != null && resultCode == RESULT_OK && !checkColumnValue){
+                RelativeLayout rv = (RelativeLayout) findViewById(R.id.relativeLayOut);
+                Snackbar.make(rv, "찾는 컬럼이 없습니다." ,Snackbar.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "취소", Toast.LENGTH_LONG).show();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -171,13 +179,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public boolean checkColumn(String columnName){
+        boolean returnValue = false;
+
+        SharedPreferences prefb = getSharedPreferences("columnName", MODE_PRIVATE);
+        Collection<?> col =  prefb.getAll().values();
+        Iterator<?> it = col.iterator();
+
+        while(it.hasNext())
+        {
+            if(columnName.equals(it.next().toString())){
+                returnValue = true;
+            }
+        }
+
+        return returnValue;
+    }
+
     public void getColumnList()
     {
         ArrayList<String> columnNameList = new ArrayList<String>();
         String tempColumnName = "";
 
         //키값없이 모든 저장값 가져오기
-        SharedPreferences prefb =getSharedPreferences("columnName", MODE_PRIVATE);
+        SharedPreferences prefb = getSharedPreferences("columnName", MODE_PRIVATE);
         Collection<?> col =  prefb.getAll().values();
         Iterator<?> it = col.iterator();
 
@@ -226,25 +251,8 @@ public class MainActivity extends AppCompatActivity {
         else{
             Log.e("확인불가능","확인불가능");
         }
-
-/*
-
-        File xlsFile = new File(getExternalFilesDir(null), "text.xls");
-        try {
-            FileOutputStream os = new FileOutputStream(xlsFile);
-            workbook.write(os);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-*/
-
-
-        //Toast.makeText(getApplicationContext(), xlsFile.getAbsolutePath() + "에 저장되었습니다.", Toast.LENGTH_SHORT).show();
-
-        // for(int i=0; i)
-        // DB (0,0 부터 끝까지)
-        // for(int i=0; i<)
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

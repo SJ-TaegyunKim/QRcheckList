@@ -174,26 +174,4 @@ public class GenerateQRcode extends AppCompatActivity {
         }
         return bmp;
     }
-
-
-    // TODO 리퀘스트 받아오는 부분을 앱 시작할 때 한번만 받아오도록 하면 좋을 것 같다. (Main 에서 처리할 것)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case WRITE_STORAGE:
-                for (int i = 0; i < permissions.length; i++) {
-                    String permission = permissions[i];
-                    int grantResult = grantResults[i];
-                    if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                        if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                            Log.e("Permission","Permission");
-                        } else {
-                            Log.e("Permission error","Permission error");
-                        }
-                    }
-                }
-                break;
-        }
-    }
 }
