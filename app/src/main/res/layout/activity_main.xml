@@ -6,6 +6,7 @@
     android:layout_height="fill_parent"
     android:layout_gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
+    android:id="@+id/relativeLayOut"
     tools:context="com.example.taegyunkim.qrcode.MainActivity">
 
     <LinearLayout

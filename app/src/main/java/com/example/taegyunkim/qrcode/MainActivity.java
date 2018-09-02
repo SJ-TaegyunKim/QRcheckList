@@ -9,12 +9,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Environment;
+import android.renderscript.Sampler;
+
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.taegyunkim.qrcode.Etc.Singleton;
@@ -32,6 +35,7 @@ import android.os.Build;
 import android.util.Log;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.formula.functions.Value;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -63,18 +67,23 @@ public class MainActivity extends AppCompatActivity {
     String dbName = "IngrediDBfile.db";
     //public SQLiteDatabase db;
 
+    RelativeLayout rv;
+
     Intent classifyString;
     Button btnGenerateClick;
     Button btnChangeColumns;
-    // 버튼 리스너 연결 ( 권한 받기)
+
+    // 버튼 리스너 연결
     Button btnSaveData;
-    String temp;
+    String returnQRValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Stetho.initializeWithDefaults(this);
+
+         rv = (RelativeLayout) findViewById(R.id.relativeLayOut);
 
         btnGenerateClick = (Button) findViewById(R.id.btn_generateQR);
         btnGenerateClick.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
         btnSaveData.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                // TODO: 2018. 8. 27. 권한설정 다시 설정할 것. WRITE_EXTERNAL_STORAGE 권한 못받아옴.
-                // TODO: 지금은 Image저장할 때 한번 받아오면 가능한 형식으로 저장.
                 saveDB();
             }
         });
@@ -148,26 +155,27 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == IntentIntegrator.REQUEST_CODE) {
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
-            //TODO temp 에 QR코드 입력된거 String 으로 저장
-            //TODO temp가 SharedPreference에 있는지 없는지만 확인해서 boolean으로 받은다음에
-            //TODO 바로밑에 if문에 조건 추가하면 될듯.
-            temp = result.getContents();
+            returnQRValue = result.getContents();
+            boolean checkColumnValue = checkColumn(returnQRValue);
 
-            if (result != null && resultCode == RESULT_OK) {
+            if (result != null && resultCode == RESULT_OK && checkColumnValue) {
                 try {
-                    temp = result.getContents();
-                    temp = URLDecoder.decode(temp, "UTF-8");
+                    returnQRValue = result.getContents();
+                    returnQRValue = URLDecoder.decode(returnQRValue, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                Toast.makeText(this, "Scanned: " + temp, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Scanned: " + returnQRValue, Toast.LENGTH_LONG).show();
 
                 classifyString = new Intent(getApplicationContext(), ClassifyMachine.class);
-                classifyString.putExtra("result", temp);
+                classifyString.putExtra("result", returnQRValue);
                 startActivity(classifyString);
-            } else {
-                //TODO Alert메시지 여기서 띄우면 될듯.
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            }
+            else if(result != null && resultCode == RESULT_OK && !checkColumnValue){
+                Snackbar.make(rv, "찾는 컬럼이 없습니다." ,Snackbar.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "취소", Toast.LENGTH_LONG).show();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -188,13 +196,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public boolean checkColumn(String columnName){
+        boolean returnValue = false;
+
+        SharedPreferences prefb = getSharedPreferences("columnName", MODE_PRIVATE);
+        Collection<?> col =  prefb.getAll().values();
+        Iterator<?> it = col.iterator();
+
+        while(it.hasNext())
+        {
+            if(columnName.equals(it.next().toString())){
+                returnValue = true;
+            }
+        }
+
+        return returnValue;
+    }
+
     public void getColumnList()
     {
         ArrayList<String> columnNameList = new ArrayList<String>();
         String tempColumnName = "";
 
         //키값없이 모든 저장값 가져오기
-        SharedPreferences prefb =getSharedPreferences("columnName", MODE_PRIVATE);
+        SharedPreferences prefb = getSharedPreferences("columnName", MODE_PRIVATE);
         Collection<?> col =  prefb.getAll().values();
         Iterator<?> it = col.iterator();
 
@@ -211,37 +236,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveDB() {
-        Workbook workbook = new HSSFWorkbook();
-        Sheet sheet = workbook.createSheet();
+        //TODO 근데 컬럼명 변경되면 다 변경될거아녀... 그전 값은 그대로고
+        //TODO 어카지?
+        int countRow = 0;
+        int countCell = 0;
 
-        Row row = sheet.createRow(0);
+        Workbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Ingredian");
+
+        Row row;
         Cell cell;
 
-        //TODO 여기는 Cell 가져오는거 다시 지정할 것.
-        //TODO 셀 전부 저장
+        // sheet의 첫번째 Row 생성
+        row = sheet.createRow(countRow);
 
-        // while로 끝까지는 검색
-        // 그안에 for문으로 26번째때 나와서 한줄 띄우기
-        cell = row.createCell(0);
-        cell.setCellValue("한글");
+        // ColumnNames 첫 줄에 작성
+        String columnNames[] = helper.selectColumn();
 
-        cell = row.createCell(1);
-        cell.setCellValue("English");
+        // 분류 항목들 작성
+        for(int i=0; i<columnNames.length; i++){
+            cell = row.createCell(countCell);
+            cell.setCellValue(columnNames[i]);
+            countCell++;
+        }
+        countRow = 0;
+        countCell = 0;
 
-        cell = row.createCell(2);
-        cell.setCellValue("123");
 
-        CellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setWrapText(true);
+        //TODO 셀들 다 가져오기
+        helper.select();
 
-        cell = row.createCell(0);
-        cell.setCellValue("한글");
-
-        cell = row.createCell(1);
-        cell.setCellValue("English");
-
-        cell = row.createCell(2);
-        cell.setCellValue("123");
 
         String state = Environment.getExternalStorageState();
         if(Environment.MEDIA_MOUNTED.equals(state)||
@@ -252,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
                 FileOutputStream os = new FileOutputStream(file);
                 workbook.write(os);
 
-                Snackbar.make(getCurrentFocus(), "갤러리에 이미지가 저장되었습니다.", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rv,"Download 폴더에 저장되었습니다.",Snackbar.LENGTH_LONG).show();
             } catch (IOException e) {
                 e.printStackTrace();
             }

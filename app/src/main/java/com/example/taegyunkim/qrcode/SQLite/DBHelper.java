@@ -31,10 +31,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         // date 만들어주기
         String date = Singleton.getInstance().getDate();
-
         db.execSQL("CREATE TABLE if not exists Ingredion (date text primary key, Auto_Clave text,Auto_Clave_explain text,AAS text,AAS_explain text,Water_bath_가공전분_explain text,Water_bath_Advantec_explain text,Water_bath_가공전분 text,Water_bath_청신_explain text,Water_bath_Advantec text,Hotplate_전분6구_explain text,Water_bath_청신 text,Hotplate_제당우_explain text,Hotplate_전분6구 text,회화로_좌 text,회화로_좌_explain text,Hotplate_제당우 text,회화로_우 text,회화로_우_explain text,회화로_킬달용 text,회화로_킬달용_explain text,Hotplate_회화로옆 text,Hotplate_회화로옆_explain text,Hotplate_제당좌 text,Hotplate_제당좌_explain text,인화성물질보관 text,인화성물질보관_explain text, 점검자 text)");
-
-        Log.d(tag,"onCreate");
     }
 
     // DB 업그레이드를 위해 버전이 변경될 때 호출되는 함수
@@ -66,14 +63,23 @@ public class DBHelper extends SQLiteOpenHelper
 
         while(c.moveToNext()){
             String date = c.getString(c.getColumnIndex("date"));
+            Log.e("TG Date", date);
             String checkPerson = c.getString(c.getColumnIndex("점검자"));
+            Log.e("TG Date", checkPerson);
             String a1 = c.getString(c.getColumnIndex("회화로좌"));
-
-            Log.d(tag,"date : "+date+", 점검자 : "+checkPerson+", 회화로좌 : "+a1);
+            Log.e("TG Date", a1);
         }
     }
 
-    // Override select(String input)
+    public String[] selectColumn(){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Ingredion",null);
+        String columnNames[] = cursor.getColumnNames();
+
+        return columnNames;
+    }
+
+    // Override select(String input) //TODO 왜 필요한지 이유 못찾겠다.
     public void select(String columns){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor;
