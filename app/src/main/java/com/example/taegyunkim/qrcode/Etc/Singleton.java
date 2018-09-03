@@ -15,6 +15,7 @@ public class Singleton {
     private boolean checkFail;
     private boolean dateCheck;
     private String date;
+    private String manager;
     private ArrayList<String> columnNameList = new ArrayList<String>();
 
     public static Singleton getInstance() {
@@ -40,6 +41,10 @@ public class Singleton {
     public boolean getDateCheck() { return this.dateCheck; }
 
     public void setDateCheck(boolean dateCheck) { this.dateCheck = dateCheck; }
+
+    public void setManager(String manager) {this.manager = manager;}
+
+    public String getManager() { return this.manager; }
 
     public String getDate(){ return this.date; }
 
