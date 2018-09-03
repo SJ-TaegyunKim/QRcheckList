@@ -4,10 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.net.Uri;
 import android.os.Environment;
 import android.renderscript.Sampler;
 
@@ -128,6 +131,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void isInstallApp(String packageName){
+        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+
+        if(intent==null){
+            Intent intentPlayStore = new Intent(Intent.ACTION_VIEW);
+            intentPlayStore.setData(Uri.parse("market://details?id=com.microsoft.office.excel"));
+            startActivity(intentPlayStore);
+        }
+    }
+
     public String checkTodayDate(){
         Date dateTemp = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -239,13 +252,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveDB() {
+        Toast.makeText(getApplicationContext(),"Excel을 설치해주세요.", Toast.LENGTH_LONG).show();
+        isInstallApp("com.microsoft.office.excel");
+
         int countRow = 0;
         int countCell = 0;
 
         Workbook workbook = new HSSFWorkbook();
         Sheet sheet = workbook.createSheet("Ingredian");
         //CellStyle cellStyle = workbook.createCellStyle();
-
 
         Row row;
         Cell cell;
@@ -272,10 +287,6 @@ public class MainActivity extends AppCompatActivity {
 
         row = sheet.createRow(countRow);
         countCell = 0;
-
-        //TODO 생각했을 때, Null 값은 columns사이즈로 들어가지않아서 값이 있는 곳까지 For문에 안들어가는듯.
-        //TODO 1) insert할 때 모든 컬럼값 Null로 초기화를 하던가
-        //TODO 2) NullpointException이 발생하지않으면 있는데 까지 참조를 하던가
 
         if(columnNames.length > columns.size()){ //TODO 한줄 이하일 때
             for(int i=0; i<columns.size(); i++){

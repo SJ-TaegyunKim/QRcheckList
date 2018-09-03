@@ -81,7 +81,6 @@ public class ClassifyMachine extends AppCompatActivity {
                     con.setBackgroundResource(R.drawable.shape);
                     con.addView(newLayout);
                 }
-
             }
         });
 
