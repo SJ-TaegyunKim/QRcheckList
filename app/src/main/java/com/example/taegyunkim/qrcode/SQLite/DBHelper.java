@@ -124,8 +124,9 @@ public class DBHelper extends SQLiteOpenHelper
         SharedPreferences prefs = mContext.getSharedPreferences("columnName", 0);
         SharedPreferences.Editor editor = prefs.edit();
         SQLiteDatabase db = getWritableDatabase();
+        String oldExplain = oldColumn + "_explain";
         String createSql = "CREATE TABLE if not exists Ingredion (date text primary key, ";
-        String copySql = "INSERT INTO Ingredion(";
+        String copySql = "INSERT INTO Ingredion(date, ";
 
         db.execSQL("ALTER TABLE Ingredion RENAME TO Ingredion2");
 
@@ -134,9 +135,10 @@ public class DBHelper extends SQLiteOpenHelper
             if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==true)
             {
                 createSql += newColumn + " text,";
-            }
-            else
+            } else if (Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldExplain)==true)
             {
+                createSql += newColumn + "_explain text,";
+            } else {
                 createSql += Singleton.getInstance().getColumnNameList().get(i).toString() + " text,";
             }
         }
@@ -147,42 +149,50 @@ public class DBHelper extends SQLiteOpenHelper
         {
             if(i==Singleton.getInstance().getColumnNameList().size()-1)
             {
-                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false)
+                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false &&
+                        Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldExplain)==false)
                 {
                     copySql += Singleton.getInstance().getColumnNameList().get(i).toString() + ") ";
                 }
             }
             else
             {
-                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false)
+                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false &&
+                        Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldExplain)==false)
                 {
                     copySql += Singleton.getInstance().getColumnNameList().get(i).toString() + ", ";
                 }
             }
         }
-        copySql += " SELECT ";
+        copySql += " SELECT date, ";
 
         for(int i=0; i<Singleton.getInstance().getColumnNameList().size(); i++)
         {
             if(i==Singleton.getInstance().getColumnNameList().size()-1)
             {
-                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false)
+                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false &&
+                        Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldExplain)==false)
                 {
                     copySql += Singleton.getInstance().getColumnNameList().get(i).toString() + " FROM Ingredion2";
                 }
             }
             else
             {
-                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false)
+                if(Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldColumn)==false &&
+                        Singleton.getInstance().getColumnNameList().get(i).toString().equals(oldExplain)==false)
                 {
                     copySql += Singleton.getInstance().getColumnNameList().get(i).toString() + ", ";
                 }
             }
         }
 
+        Log.e("CREATE SQL", createSql);
+        Log.e("INSERT SQL", copySql);
+
         db.execSQL(copySql);
         db.execSQL("DROP TABLE Ingredion2");
         editor.putString(findKey(oldColumn),newColumn);
+        editor.putString(findKey(oldExplain),newColumn+"_explain");
         editor.apply();
         db.close();
     }
