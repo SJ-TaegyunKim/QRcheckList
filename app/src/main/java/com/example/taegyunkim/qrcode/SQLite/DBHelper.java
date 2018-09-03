@@ -66,6 +66,16 @@ public class DBHelper extends SQLiteOpenHelper
         db.close();
     }
 
+    public void updateManager() {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("점검자", Singleton.getInstance().getManager()); // 결과값 저장
+        db.update("Ingredion", values,null,null);
+
+        db.close();
+    }
+
     public ArrayList<String> select() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("SELECT * FROM Ingredion", null);
@@ -98,6 +108,7 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     // Override select(String input) //TODO 왜 필요한지 이유 못찾겠다.
+
     public void select(String columns){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor;
@@ -113,6 +124,21 @@ public class DBHelper extends SQLiteOpenHelper
             }
         }
     }
+
+    public String selectManager(){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor;
+
+        cursor = db.rawQuery("SELECT 점검자 FROM Ingredion",null); // columns 가 아니라
+
+        String result=""; // date 값 정정을 위한 String 변수
+
+        while (cursor.moveToNext()){
+            result = cursor.getString(cursor.getColumnIndex("점검자"));
+        }
+        return result;
+    }
+
 
     public void delete(){
         SQLiteDatabase db = getReadableDatabase();

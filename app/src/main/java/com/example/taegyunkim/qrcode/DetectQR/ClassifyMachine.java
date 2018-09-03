@@ -1,4 +1,6 @@
 package com.example.taegyunkim.qrcode.DetectQR;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import com.example.taegyunkim.qrcode.Etc.SubView;
 import com.example.taegyunkim.qrcode.Etc.Singleton;
 import com.example.taegyunkim.qrcode.R;
+import com.example.taegyunkim.qrcode.SQLite.ChangeColumn;
 import com.example.taegyunkim.qrcode.SQLite.DBHelper;
 
 import java.io.UnsupportedEncodingException;
@@ -88,31 +91,55 @@ public class ClassifyMachine extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() { // submit 클릭 이벤트
             @Override
             public void onClick(View view) {
-                if (sRadio.isChecked()) {                                 // sRadio 체크 되어있을 때
-                    // 1. select 문을 통해 해당 컬럼 존재하는지 조사.
-                    // 2. 없으면 Toast 메시지 띄울 것.
-                    // 2-1. 있으면 update 진행하고 비고는 null 값으로 초기화 할 것.
-                    // machineName                                        // 기계명  ex) 회화로(좌),회화로(우)
-                    machineCheck = true;                                // 기계 합,불 체크 ex) PASS,Non-Pass
-                    reasonForNonPass = "Null";                           // DB NotNULL 이면 아무 문자열이라도 바꿀 것.
 
-                    helper.update(machineName, "P", reasonForNonPass);
-
-                    Toast.makeText(getApplicationContext(),"Pass로 제출되었습니다.", Toast.LENGTH_LONG).show();
-                }
-                else {                                                    // fRadio 체크 되어있을 때
-                    // machineName                                        // 기계명  ex) 회화로(좌),회화로(우)
-                    machineCheck = false;                                 // 기계 합,불 체크 ex) PASS,Non-Pass
-                    editText = (EditText) findViewById(R.id.checkFailExplain); // 불합격 사유 editText 와 연결
-                    reasonForNonPass = editText.getText().toString();     // Non-Pass 이유 넣기
-
-                    helper.update(machineName, "NP", reasonForNonPass);
-
-                    Toast.makeText(getApplicationContext(),"Non-Pass로 제출되었습니다.", Toast.LENGTH_LONG).show();
-                }
-
-                finish();
+                managerInputDialog();
             }
         });
+    }
+
+    public void managerInputDialog()
+    {
+            if (!ClassifyMachine.this.isFinishing())
+            {
+                final EditText et = new EditText(ClassifyMachine.this);
+                et.setText(helper.selectManager());
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ClassifyMachine.this);
+                builder.setTitle("점검자 설정");
+                builder.setView(et);
+                builder.setPositiveButton("확인",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                Singleton.getInstance().setManager(et.getText().toString());
+                                if (sRadio.isChecked()) {                                 // sRadio 체크 되어있을 때
+                                    // 1. select 문을 통해 해당 컬럼 존재하는지 조사.
+                                    // 2. 없으면 Toast 메시지 띄울 것.
+                                    // 2-1. 있으면 update 진행하고 비고는 null 값으로 초기화 할 것.
+                                    // machineName                                        // 기계명  ex) 회화로(좌),회화로(우)
+                                    machineCheck = true;                                // 기계 합,불 체크 ex) PASS,Non-Pass
+                                    reasonForNonPass = "Null";                           // DB NotNULL 이면 아무 문자열이라도 바꿀 것.
+
+                                    helper.update(machineName, "P", reasonForNonPass);
+
+                                    Toast.makeText(getApplicationContext(),"Pass로 제출되었습니다.", Toast.LENGTH_LONG).show();
+                                }
+                                else {                                                    // fRadio 체크 되어있을 때
+                                    // machineName                                        // 기계명  ex) 회화로(좌),회화로(우)
+                                    machineCheck = false;                                 // 기계 합,불 체크 ex) PASS,Non-Pass
+                                    editText = (EditText) findViewById(R.id.checkFailExplain); // 불합격 사유 editText 와 연결
+                                    reasonForNonPass = editText.getText().toString();     // Non-Pass 이유 넣기
+
+                                    helper.update(machineName, "NP", reasonForNonPass);
+
+                                    Toast.makeText(getApplicationContext(),"Non-Pass로 제출되었습니다.", Toast.LENGTH_LONG).show();
+                                }
+                                helper.updateManager();
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                builder.show();
+            }
     }
 }
