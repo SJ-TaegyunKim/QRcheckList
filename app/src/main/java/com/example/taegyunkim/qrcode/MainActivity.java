@@ -135,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
 
         if(intent==null){
+            Snackbar.make(rv,"Excel을 설치해주세요",Snackbar.LENGTH_LONG).show();
+
             Intent intentPlayStore = new Intent(Intent.ACTION_VIEW);
             intentPlayStore.setData(Uri.parse("market://details?id=com.microsoft.office.excel"));
             startActivity(intentPlayStore);
@@ -252,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveDB() {
-        Toast.makeText(getApplicationContext(),"Excel을 설치해주세요.", Toast.LENGTH_LONG).show();
         isInstallApp("com.microsoft.office.excel");
 
         int countRow = 0;
@@ -317,6 +318,11 @@ public class MainActivity extends AppCompatActivity {
                 workbook.write(os);
 
                 Snackbar.make(rv,"Download 폴더에 저장되었습니다.",Snackbar.LENGTH_LONG).show();
+
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(file),"application/vnd.ms-excel");
+                startActivity(intent);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -324,6 +330,7 @@ public class MainActivity extends AppCompatActivity {
         else{
             Log.e("확인불가능","확인불가능");
         }
+
     }
 
     @Override
