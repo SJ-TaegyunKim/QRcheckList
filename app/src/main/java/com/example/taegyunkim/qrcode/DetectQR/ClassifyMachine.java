@@ -142,4 +142,10 @@ public class ClassifyMachine extends AppCompatActivity {
                 builder.show();
             }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Singleton.getInstance().setCheckFail(false);
+    }
 }
