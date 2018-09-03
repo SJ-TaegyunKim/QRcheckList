@@ -12,9 +12,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.renderscript.Sampler;
 
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Stetho.initializeWithDefaults(this);
 
+        checkWriteExternalStorage();
+
         rv = (RelativeLayout) findViewById(R.id.relativeLayOut);
 
         btnGenerateClick = (Button) findViewById(R.id.btn_generateQR);
@@ -128,6 +133,21 @@ public class MainActivity extends AppCompatActivity {
         if (!Singleton.getInstance().getDateCheck()) {
             Singleton.getInstance().setDate();
             helper.insert();
+        }
+    }
+
+    public void checkWriteExternalStorage(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+        } else{
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                Snackbar.make(findViewById(R.id.relativeLayOut),"저장 권한을 허용해주세요.",Snackbar.LENGTH_LONG).show();
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+            }
+
+            //사용자에게 접근권한 설정을 요구하는 다이얼로그를 띄운다.
+            //만약 사용자가 다시 보지 않기에 체크를 했을 경우엔 권한 설정 다이얼로그가 뜨지 않고,
+            //곧바로 OnRequestPermissionResult가 실행된다.
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
         }
     }
 
@@ -236,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> columnNameList = new ArrayList<String>();
         String tempColumnName = "";
 
-        //키값없이 모든 저장값 가져오기
+        // 키값없이 모든 저장값 가져오기
         SharedPreferences prefb = getSharedPreferences("columnName", MODE_PRIVATE);
         Collection<?> col =  prefb.getAll().values();
         Iterator<?> it = col.iterator();
@@ -254,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveDB() {
+        checkWriteExternalStorage();
         isInstallApp("com.microsoft.office.excel");
 
         int countRow = 0;
@@ -327,10 +348,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        else{
-            Log.e("확인불가능","확인불가능");
-        }
-
     }
 
     @Override
@@ -345,7 +362,9 @@ public class MainActivity extends AppCompatActivity {
                         if (grantResult == PackageManager.PERMISSION_GRANTED) {
                             Log.e("Permission","Permission");
                         } else {
-                            Log.e("Permission error","Permission error");
+                            Snackbar.make(findViewById(R.id.relativeLayOut),"앱 재설치 후 저장 권한 허용해주세요.",Snackbar.LENGTH_LONG);
+                            SystemClock.sleep(1500);
+                            finish();
                         }
                     }
                 }
