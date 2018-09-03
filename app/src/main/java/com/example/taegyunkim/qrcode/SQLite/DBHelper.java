@@ -42,6 +42,7 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
+
     public void insert() {
         // 읽고 쓰기가 가능하게 DB 열기
         SQLiteDatabase db = getWritableDatabase();
@@ -52,11 +53,15 @@ public class DBHelper extends SQLiteOpenHelper
         db.close();
     }
 
-
-    public void update(String column, String value, boolean checkValue) {
+    public void update(String column, boolean checkValue, String reasonResult) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        //db.update("Ingredion",values)
+
+        values.put(column, checkValue); // 결과값 저장
+        db.update("Ingredion", values,null,null);
+
+        values.put(column+"_explain", reasonResult);
+        db.update("Ingredion", values,null,null);
 
         db.close();
     }

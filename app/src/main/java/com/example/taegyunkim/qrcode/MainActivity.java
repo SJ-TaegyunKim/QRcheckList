@@ -65,7 +65,7 @@ import static com.example.taegyunkim.qrcode.GenerateQR.GenerateQRcode.WRITE_STOR
 
 public class MainActivity extends AppCompatActivity {
     private DBHelper helper;
-    String dbName = "IngrediDBfile.db";
+    public static String DBNAME = "IngrediDBfile.db";
     //public SQLiteDatabase db;
 
     RelativeLayout rv;
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Stetho.initializeWithDefaults(this);
 
-         rv = (RelativeLayout) findViewById(R.id.relativeLayOut);
+        rv = (RelativeLayout) findViewById(R.id.relativeLayOut);
 
         btnGenerateClick = (Button) findViewById(R.id.btn_generateQR);
         btnGenerateClick.setOnClickListener(new View.OnClickListener() {
@@ -104,9 +104,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         btnSaveData = (Button) findViewById(R.id.btn_SaveData);
-        btnSaveData.setOnClickListener(new View.OnClickListener(){
+        btnSaveData.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 saveDB();
             }
         });
@@ -115,14 +115,14 @@ public class MainActivity extends AppCompatActivity {
         String[] column = {"회화로_좌", "회화로_좌_explain", "회화로_우", "회화로_우_explain", "회화로_킬달용", "회화로_킬달용_explain", "Hotplate_회화로옆", "Hotplate_회화로옆_explain", "Hotplate_제당좌", "Hotplate_제당좌_explain", "Hotplate_제당우", "Hotplate_제당우_explain", "Hotplate_전분6구", "Hotplate_전분6구_explain", "Water_bath_청신", "Water_bath_청신_explain", "Water_bath_Advantec", "Water_bath_Advantec_explain", "Water_bath_가공전분", "Water_bath_가공전분_explain", "AAS", "AAS_explain", "Auto_Clave", "Auto_Clave_explain", "인화성물질보관", "인화성물질보관_explain"};
         saveArray(column, "columnName", getApplicationContext());
 
+        helper = new DBHelper(this, DBNAME, null, 1);
 
-        helper = new DBHelper(this, dbName, null, 1);
-        helper.delete();
+        //helper.delete();
 
         String getTempDate = checkTodayDate();
         helper.select(getTempDate);
 
-        if(!Singleton.getInstance().getDateCheck()){
+        if (!Singleton.getInstance().getDateCheck()) {
             Singleton.getInstance().setDate();
             helper.insert();
         }
@@ -155,7 +155,11 @@ public class MainActivity extends AppCompatActivity {
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
             returnQRValue = result.getContents();
-            boolean checkColumnValue = checkColumn(returnQRValue);
+            boolean checkColumnValue = false; //TODO 임시값
+
+            if(result != null && resultCode == RESULT_OK) {
+                checkColumnValue = checkColumn(returnQRValue);
+            }
 
             if (result != null && resultCode == RESULT_OK && checkColumnValue) {
                 try {
@@ -248,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
         Row row;
         Cell cell;
 
+        //TODO 첫번째 분류 항목들 작성
         // sheet의 첫번째 Row 생성
         row = sheet.createRow(countRow);
 
@@ -268,18 +273,20 @@ public class MainActivity extends AppCompatActivity {
         //TODO 셀들 다 가져오기
         ArrayList<String> columns = helper.select();
 
-        Log.e("row", String.valueOf(countRow));
-
         row = sheet.createRow(countRow);
         countCell = 0;
 
-        if(columnNames.length > columns.size()){
+
+        //TODO 생각했을 때, Null 값은 columns사이즈로 들어가지않아서 값이 있는 곳까지 For문에 안들어가는듯.
+        //TODO 1) insert할 때 모든 컬럼값 Null로 초기화를 하던가
+        //TODO 2) NullpointException이 발생하지않으면 있는데 까지 참조를 하던가
+        if(columnNames.length > columns.size()){ //TODO 한줄 이하일 때
             for(int i=0; i<columns.size(); i++){
                 cell = row.createCell(countCell);
                 cell.setCellValue(columns.get(i));
                 countCell++;
             }
-        }else{
+        }else{ //TODO 한줄 이상일 때
             for(int i=0; i<columns.size() / columnNames.length; i++){
                 countCell = 0;
                 for(int j=0; j<columns.size(); j++){
