@@ -27,7 +27,6 @@
         </activity>
         <activity android:name=".GenerateQR.GenerateQRcode" />
         <activity android:name=".DetectQR.ClassifyMachine" />
-        <activity android:name=".Etc.SubView" />
         <activity android:name=".SQLite.ChangeColumn" />
     </application>
 
