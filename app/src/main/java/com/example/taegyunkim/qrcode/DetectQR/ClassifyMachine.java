@@ -96,7 +96,7 @@ public class ClassifyMachine extends AppCompatActivity {
                     machineCheck = true;                                // 기계 합,불 체크 ex) PASS,Non-Pass
                     reasonForNonPass = "Null";                           // DB NotNULL 이면 아무 문자열이라도 바꿀 것.
 
-                    helper.update(machineName, machineCheck, reasonForNonPass);
+                    helper.update(machineName, "P", reasonForNonPass);
 
                     Toast.makeText(getApplicationContext(),"Pass로 제출되었습니다.", Toast.LENGTH_LONG).show();
                 }
@@ -106,7 +106,7 @@ public class ClassifyMachine extends AppCompatActivity {
                     editText = (EditText) findViewById(R.id.checkFailExplain); // 불합격 사유 editText 와 연결
                     reasonForNonPass = editText.getText().toString();     // Non-Pass 이유 넣기
 
-                    helper.update(machineName, machineCheck, reasonForNonPass);
+                    helper.update(machineName, "NP", reasonForNonPass);
 
                     Toast.makeText(getApplicationContext(),"Non-Pass로 제출되었습니다.", Toast.LENGTH_LONG).show();
                 }

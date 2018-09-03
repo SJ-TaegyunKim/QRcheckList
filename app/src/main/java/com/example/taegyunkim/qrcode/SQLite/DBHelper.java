@@ -53,7 +53,7 @@ public class DBHelper extends SQLiteOpenHelper
         db.close();
     }
 
-    public void update(String column, boolean checkValue, String reasonResult) {
+    public void update(String column, String checkValue, String reasonResult) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -66,16 +66,24 @@ public class DBHelper extends SQLiteOpenHelper
         db.close();
     }
 
-    public ArrayList<String> select(){
+    public ArrayList<String> select() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM Ingredion",null);
+        Cursor c = db.rawQuery("SELECT * FROM Ingredion", null);
         ArrayList<String> indexValue = new ArrayList<>();
 
-        int whileCount = 0;
-
-        while(c.moveToNext()){
-            indexValue.add(c.getString(whileCount));
-            whileCount++;
+        while(c.moveToNext())
+        {
+            for (int i = 0; i < c.getColumnCount(); i++)
+            {
+                if(c.isNull(i))
+                {
+                    indexValue.add("미점검");
+                }
+                else
+                {
+                    indexValue.add(c.getString(i));
+                }
+            }
         }
 
         return indexValue;
