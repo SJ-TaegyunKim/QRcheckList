@@ -168,6 +168,7 @@ public class DBHelper extends SQLiteOpenHelper
                 createSql += Singleton.getInstance().getColumnNameList().get(i).toString() + " text,";
             }
         }
+
         createSql += " 점검자 text)";
         db.execSQL(createSql);
 
