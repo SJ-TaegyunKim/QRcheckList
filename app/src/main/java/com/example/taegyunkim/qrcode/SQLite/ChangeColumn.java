@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.taegyunkim.qrcode.GenerateQR.GenerateQRcode;
 import com.example.taegyunkim.qrcode.R;
 
 import java.util.ArrayList;
@@ -91,9 +92,23 @@ public class ChangeColumn extends AppCompatActivity {
 
             newColumnName = newColumn.getText().toString();
             currentColumnName = spinner.getSelectedItem().toString();
+            Log.e("TEST",currentColumnName);
 
-            dbHelper.alter(currentColumnName, newColumnName);
-            showDialog();
+            if(currentColumnName.equals("수정을 원하시는 점검 항목을 선택해주세요."))
+            {
+                Toast.makeText(ChangeColumn.this, "수정하실 점검 항목을 선택해주세요.", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                if(dbHelper.alter(currentColumnName, newColumnName)==true)
+                {
+                    showDialog();
+                }
+                else
+                {
+                    Toast.makeText(ChangeColumn.this, "해당 이름은 사용이 불가능합니다.", Toast.LENGTH_LONG).show();
+                }
+            }
         }
     };
 
