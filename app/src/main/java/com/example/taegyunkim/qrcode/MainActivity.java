@@ -190,6 +190,13 @@ public class MainActivity extends AppCompatActivity {
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
             returnQRValue = result.getContents();
+
+            try {
+                returnQRValue = URLDecoder.decode(returnQRValue, "UTF-8");
+            }catch (UnsupportedEncodingException e){
+                e.printStackTrace();
+            }
+
             boolean checkColumnValue = false; //TODO 임시값
 
             if(result != null && resultCode == RESULT_OK) {
@@ -197,12 +204,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (result != null && resultCode == RESULT_OK && checkColumnValue) {
-                try {
-                    returnQRValue = result.getContents();
-                    returnQRValue = URLDecoder.decode(returnQRValue, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
                 Toast.makeText(this, "Scanned: " + returnQRValue, Toast.LENGTH_LONG).show();
 
                 classifyString = new Intent(getApplicationContext(), ClassifyMachine.class);
