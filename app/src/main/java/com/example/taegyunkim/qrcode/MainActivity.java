@@ -252,26 +252,34 @@ public class MainActivity extends AppCompatActivity {
         return returnValue;
     }
 
-    public void getColumnList()
+    public ArrayList<String> getColumnList()
     {
         ArrayList<String> columnNameList = new ArrayList<String>();
         String tempColumnName = "";
 
         // 키값없이 모든 저장값 가져오기
         SharedPreferences prefb = getSharedPreferences("columnName", MODE_PRIVATE);
-        Collection<?> col =  prefb.getAll().values();
-        Iterator<?> it = col.iterator();
 
-        while(it.hasNext())
-        {
-            tempColumnName = it.next().toString();
-
-            if(tempColumnName.equals("26")==false)
-            {
-                columnNameList.add(tempColumnName);
-            }
+        for(int i=0; i<26; i++) {
+            tempColumnName = prefb.getString("columnName_" + i, "Not");
+            Log.e("TG TempColumName Count "+i+" : ",tempColumnName);
+            columnNameList.add(tempColumnName);
         }
+
         Singleton.getInstance().setColumnNameList(columnNameList);
+
+        return columnNameList;
+    }
+
+    public ArrayList<String> getColumnsListForSaveDB()
+    {
+        ArrayList<String> columnNameList = getColumnList();
+
+        for(int i =0; i<columnNameList.size(); i++){
+            Log.e("TG Count "+i+" : ",columnNameList.get(i));
+        }
+
+        return columnNameList;
     }
 
     private void saveDB() {
@@ -292,17 +300,26 @@ public class MainActivity extends AppCompatActivity {
         // sheet의 첫번째 Row 생성
         row = sheet.createRow(countRow);
 
+        cell = row.createCell(0);
+        cell.setCellValue("date");
+        countCell++;
+
         // ColumnNames 첫 줄에 작성
-        String columnNames[] = helper.selectColumn();
+        ArrayList<String> columnNames = getColumnsListForSaveDB();
 
         // 분류 항목들 작성
-        for(int i=0; i<columnNames.length; i++){
+        for(int i=0; i<columnNames.size(); i++){
             cell = row.createCell(countCell);
             //cellStyle.setAlignment(HorizontalAlignment.CENTER);
-            cell.setCellValue(columnNames[i]);
+            cell.setCellValue(columnNames.get(i));
             //cell.setCellStyle(cellStyle);
             countCell++;
         }
+
+        //점검자 추가
+        cell = row.createCell(columnNames.size()+1);
+        cell.setCellValue("점검자");
+
         countRow++;
 
         //TODO 셀들 다 가져오기
@@ -311,14 +328,14 @@ public class MainActivity extends AppCompatActivity {
         row = sheet.createRow(countRow);
         countCell = 0;
 
-        if(columnNames.length > columns.size()){ //TODO 한줄 이하일 때
+        if(columnNames.size() > columns.size()){ //TODO 한줄 이하일 때
             for(int i=0; i<columns.size(); i++){
                 cell = row.createCell(countCell);
                 cell.setCellValue(columns.get(i));
                 countCell++;
             }
         }else{ //TODO 한줄 이상일 때
-            for(int i=0; i<columns.size() / columnNames.length; i++){
+            for(int i=0; i<columns.size() / columnNames.size(); i++){
                 countCell = 0;
                 for(int j=0; j<columns.size(); j++){
                     cell = row.createCell(countCell);
