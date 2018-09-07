@@ -192,7 +192,9 @@ public class MainActivity extends AppCompatActivity {
             returnQRValue = result.getContents();
 
             try {
+                if(returnQRValue != null){
                 returnQRValue = URLDecoder.decode(returnQRValue, "UTF-8");
+                }
             }catch (UnsupportedEncodingException e){
                 e.printStackTrace();
             }
